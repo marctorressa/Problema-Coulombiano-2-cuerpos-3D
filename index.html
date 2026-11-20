@@ -1,3 +1,8 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Coulomb de dos cuerpos</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -134,6 +139,9 @@ aside.n{display:none}
 button:focus-visible,input:focus-visible,select:focus-visible,tr:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 @media (prefers-reduced-motion: reduce){.bar .prog{transition:none}}
 </style>
+</head>
+<body>
+
 
 <div class="viewport" id="vp">
 <div class="stage" id="stage">
@@ -150,7 +158,6 @@ button:focus-visible,input:focus-visible,select:focus-visible,tr:focus-visible{o
     <span class="muted">Prof. John Hernán Díaz Forero</span>
   </div>
   <canvas id="cvCover" aria-hidden="true"></canvas>
-  <aside class="n" data-t="0:00 – 0:30"><ol><li>Fenomenología 13: Coulomb de dos cuerpos, masas arbitrarias, 3D.</li><li>Caso conocido: el hidrógeno, pero aquí las dos partículas se mueven.</li><li>Tesis: se resuelve exactamente reduciéndolo a un cuerpo con masa reducida.</li><li>Ruta: el itinerario de la guía.</li><li>Puente: “veamos qué sistema físico describimos”.</li></ol></aside>
 </section>
 
 <!-- ============================== 2 ============================== -->
@@ -171,7 +178,6 @@ button:focus-visible,input:focus-visible,select:focus-visible,tr:focus-visible{o
     </div>
     <div><canvas id="cvPot" class="fig" style="height:420px"></canvas><div class="cap">Potencial efectivo para \(l=0,1,2\) y niveles \(E_n\) (líneas punteadas). Sombreado: continuo.</div></div>
   </div>
-  <aside class="n" data-t="0:30 – 1:15"><ol><li>El potencial depende solo de la distancia (dilo despacio).</li><li>α &gt; 0: caso atractivo.</li><li>Mismo Hamiltoniano para H, D, Ps, H muónico, excitones: solo cambia μ.</li><li>Gráfica: niveles discretos que se juntan en cero; continuo arriba.</li><li>Puente: “antes de la cuántica, la física clásica”.</li></ol></aside>
 </section>
 
 <!-- ============================== 3 ============================== -->
@@ -186,7 +192,6 @@ button:focus-visible,input:focus-visible,select:focus-visible,tr:focus-visible{o
     <div class="col"><h3>Es nuevo</h3>Nodos en \(\psi\) · estados estables con \(l=0\) · espectro discreto + continuo.</div>
   </div>
   <p class="xs muted" style="margin-top:auto">Conservada: no cambia en el tiempo. Discreta: solo ciertos valores están permitidos. La energía cumple las dos.</p>
-  <aside class="n" data-t="1:15 – 2:05"><ol><li>Kepler: “un planeta y una estrella”.</li><li>CM + relativa: partícula libre de masa M + un cuerpo de masa μ.</li><li>Permanece: separación y cantidades conservadas.</li><li>Cambia: se siguen conservando, pero solo ciertos valores, y hay un mínimo.</li><li>Es nuevo: nodos, estados sin momento angular, espectro discreto + continuo.</li></ol></aside>
 </section>
 
 <!-- ============================== 4 ============================== -->
@@ -208,7 +213,6 @@ button:focus-visible,input:focus-visible,select:focus-visible,tr:focus-visible{o
     </div>
   </div>
   <p class="small muted" style="margin-top:auto">Seis variables: todas posiciones (tres por partícula). El momento actúa como operador, \(\hat\pv=-\ii\hbar\nabla\).</p>
-  <aside class="n" data-t="2:05 – 2:55"><ol><li>Estados: seis variables, todas posiciones, tres por partícula.</li><li>Observables: solo no conmutan posición y momento de la misma partícula en la misma dirección.</li><li>Medición: resultados = valores propios; probabilidades = proyectores.</li><li>Dinámica: Schrödinger abstracta; Ĥ cuantizado; Û = e^(−iĤt/ħ).</li><li>Puente: “¿se puede hacer el cambio a CM con operadores?”</li></ol></aside>
 </section>
 
 <!-- ============================== 5 ============================== -->
@@ -228,7 +232,6 @@ button:focus-visible,input:focus-visible,select:focus-visible,tr:focus-visible{o
     </table>
     <div class="key small"><b>\((\hat\Rv,\hat\Pv)\)</b> y <b>\((\hat\rv,\hat\pv)\)</b> son dos pares canónicos <b>independientes</b>: como dos partículas que no se ven entre sí.</div>
   </div>
-  <aside class="n" data-t="2:55 – 3:45"><ol><li>Mismas fórmulas que en clásica, ahora con operadores.</li><li>En cuántica hay que verificar los conmutadores.</li><li>Diagonal: iħ (cada par es canónico).</li><li>Cruzados: 0 (pares independientes); m₁m₂ con signo opuesto.</li><li>“Dos partículas que no se ven entre sí”.</li></ol></aside>
 </section>
 
 <!-- ============================== 6 ============================== -->
@@ -239,7 +242,6 @@ button:focus-visible,input:focus-visible,select:focus-visible,tr:focus-visible{o
   <div class="eq">\[ \boxed{\ \hat H=\underbrace{\frac{\hat\Pv^2}{2M}}_{\hat H_{\rm CM}}+\underbrace{\frac{\hat\pv^2}{2\mu}-\frac{\alpha}{\hat r}}_{\hat H_{\rm rel}}\ },\qquad [\hat H_{\rm CM},\hat H_{\rm rel}]=0 \]</div>
   <div class="eq">\[ \Psi=\frac{\ee^{\ii\Pv\cdot\Rv/\hbar}}{(2\pi\hbar)^{3/2}}\,\psi(\rv),\qquad \Big(-\frac{\hbar^2}{2\mu}\nabla^2-\frac{\alpha}{r}\Big)\psi=E\psi,\qquad E_{\rm tot}=\frac{P^2}{2M}+E \]</div>
   <div class="box small"><h3>Condiciones de la reducción exacta</h3>(i) transformación canónica; (ii) \(V\) depende solo de \(\rv\). Toda la física interna depende de las masas <b>solo a través de \(\mu\)</b>; \(M\) solo afecta al centro de masa.</div>
-  <aside class="n" data-t="3:45 – 4:45"><ol><li>Momento de cada partícula: total repartido por masas ± el relativo.</li><li>Cruzados: uno + y uno −, se cancelan exactamente.</li><li>Partícula libre de masa M + hidrógeno con mₑ → μ.</li><li>Exacta por: transformación canónica + potencial que solo depende de la distancia.</li><li>La física interna solo ve μ. (Campo uniforme: sigue separando, rompe simetría esférica.)</li></ol></aside>
 </section>
 
 <!-- ============================== 7 ============================== -->
@@ -263,7 +265,6 @@ button:focus-visible,input:focus-visible,select:focus-visible,tr:focus-visible{o
       <p class="small">Escalera en \(l\) a energía fija → se sigue por la vía diferencial.</p>
     </div>
   </div>
-  <aside class="n" data-t="4:45 – 5:35"><ol><li>Traslaciones → P conservado → CM libre.</li><li>Rotaciones → L conservado → l, m; E no depende de m.</li><li>Paridad → reglas de selección (⟨1s|z|1s⟩ = 0).</li><li>Conjunto completo {Ĥ, L², L_z} → (n, l, m).</li><li>No hay escalera global; sí factorización radial; sigo con la ecuación diferencial.</li></ol></aside>
 </section>
 
 <!-- ============================== 8 ============================== -->
@@ -277,7 +278,6 @@ button:focus-visible,input:focus-visible,select:focus-visible,tr:focus-visible{o
     <div class="box"><h3>Para r → ∞</h3>\(u\sim\ee^{\pm\kappa r}\), \(\kappa=\sqrt{-2\mu E}/\hbar\). La creciente no se normaliza. <b>\(u(\infty)=0\)</b></div>
   </div>
   <p class="small muted" style="margin-top:auto">Dos condiciones para una ecuación de segundo orden: solo ciertas energías las cumplen a la vez.</p>
-  <aside class="n" data-t="5:35 – 6:35"><ol><li>En cartesianas 1/r mezcla x, y, z; en esféricas la parte angular es L².</li><li>Ecuación en 1D con potencial efectivo: Coulomb + barrera centrífuga.</li><li>Origen: r^(l+1) sí, r^(−l) no → u(0) = 0.</li><li>Infinito: exponencial que decae → u(∞) = 0.</li><li>Dos condiciones para una ecuación de 2.º orden → cuantización.</li></ol></aside>
 </section>
 
 <!-- ============================== 9 ============================== -->
@@ -295,7 +295,6 @@ button:focus-visible,input:focus-visible,select:focus-visible,tr:focus-visible{o
       <div class="eq">\[ l+1-\lambda=-n_r\ \Rightarrow\ \lambda=n=n_r+l+1,\quad \kappa=\frac{1}{n\aB} \]</div>
       Como la partícula en una caja: las “paredes” son el origen y el infinito.</div>
   </div>
-  <aside class="n" data-t="6:35 – 7:35"><ol><li>Sin unidades: λ guarda la energía (Whittaker).</li><li>Separar los extremos: queda w (Kummer), serie de potencias.</li><li>Serie infinita ≈ e^ρ: explota.</li><li>Debe cortarse: polinomio, solo si λ = n entero.</li><li>Analogía: partícula en una caja. n_r = nodos radiales.</li></ol></aside>
 </section>
 
 <!-- ============================== 10 ============================== -->
@@ -313,7 +312,6 @@ button:focus-visible,input:focus-visible,select:focus-visible,tr:focus-visible{o
       <div class="eq" style="font-size:22px">\[ [\aB]=\frac{\mathrm{J^2s^2}}{\mathrm{kg\,J\,m}}=\mathrm m,\qquad [\Ry]=\frac{\mathrm{kg\,J^2m^2}}{\mathrm{J^2s^2}}=\mathrm J \]</div>
       Con \(\hbar,\mu,\alpha\) no hay número adimensional: \(E\propto\mu\), longitudes \(\propto1/\mu\).</div>
   </div>
-  <aside class="n" data-t="7:35 – 8:25"><ol><li>Eₙ = −Ry_μ/n², con Ry_μ ∝ μ.</li><li>Mixto: discreto infinito acumulado en 0 + continuo.</li><li>Degeneración n²: 2l+1 por rotaciones; independencia en l propia de 1/r.</li><li>Análisis dimensional: solo una longitud y una energía.</li><li>Energía ∝ μ, tamaño ∝ 1/μ.</li></ol></aside>
 </section>
 
 <!-- ============================== 11 ============================== -->
@@ -331,7 +329,6 @@ button:focus-visible,input:focus-visible,select:focus-visible,tr:focus-visible{o
     </ul>
     <div><canvas id="cvWf" class="fig" style="height:330px"></canvas><div class="cap">\(u_{nl}=rR_{nl}\): líneas = Laguerre; círculos = diferencias finitas (calculado en vivo).</div></div>
   </div>
-  <aside class="n" data-t="8:25 – 9:10"><ol><li>Laguerre: el polinomio que salió al cortar la serie.</li><li>Partes: normalización, decaimiento, comportamiento en el origen.</li><li>Gráfica: líneas exactas, círculos numéricos; coinciden.</li><li>Nodos n−l−1; todas parten de u(0) = 0.</li><li>Chequeo H y Ps cambiando solo μ.</li></ol></aside>
 </section>
 
 <!-- ============================== 12 ============================== -->
@@ -350,7 +347,6 @@ button:focus-visible,input:focus-visible,select:focus-visible,tr:focus-visible{o
     </div>
     <div><canvas id="cvDens" class="fig" style="height:300px"></canvas><div class="cap">\(|\psi(\rv,t)|^2\) en el plano \(x\)–\(z\), animada.</div></div>
   </div>
-  <aside class="n" data-t="9:10 – 10:05"><ol><li>Û(t) espectral: cada estado gana su fase; suma + integral.</li><li>Un autoestado no muestra dinámica: hace falta superponer.</li><li>1s + 2p₀: fase relativa con la frecuencia de Bohr.</li><li>Interferencia ∝ cos θ: la nube oscila en z (paridad opuesta).</li><li>P(E₁) = P(E₂) = ½; ⟨H⟩ constante.</li></ol></aside>
 </section>
 
 <!-- ============================== 13 ============================== -->
@@ -364,7 +360,6 @@ button:focus-visible,input:focus-visible,select:focus-visible,tr:focus-visible{o
     <div class="eq" style="font-size:22px">\[ \phi_{1s}(\pv)=\frac{1}{(2\pi\hbar)^{3/2}}\frac{4\pi\hbar}{p}\int_0^\infty r\sin\Big(\frac{pr}{\hbar}\Big)\frac{\ee^{-r/\aB}}{\sqrt{\pi\aB^3}}\dd r=\frac{2\sqrt2}{\pi}\frac{p_0^{5/2}}{(p_0^2+p^2)^2},\quad p_0=\frac{\hbar}{\aB}=\frac{\mu\alpha}{\hbar} \]</div>
   </div>
   <p class="small muted">Parseval: \(\int|\phi_{1s}|^2\dd^3p=1\); \(\int p^2|\phi_{1s}|^2\dd^3p=\hbar^2/\aB^2\), igual que en posición.</p>
-  <aside class="n" data-t="10:05 – 10:50"><ol><li>En momentum, la cinética es fácil y el potencial difícil.</li><li>Transformada de 1/r: 1/|p − p′|².</li><li>Ecuación integral: el potencial transfiere momento.</li><li>Posición es la representación natural.</li><li>Fourier del 1s = solución en momentum; Parseval.</li></ol></aside>
 </section>
 
 <!-- ============================== 14 ============================== -->
@@ -378,7 +373,6 @@ button:focus-visible,input:focus-visible,select:focus-visible,tr:focus-visible{o
     <li>\(K_{\rm tot}=\Big(\dfrac{M}{2\pi\ii\hbar t}\Big)^{3/2}\ee^{\ii M|\Rv_f-\Rv_i|^2/2\hbar t}\,K\): la separación reaparece</li>
     <li>\(K=\int\mathcal D[\rv]\,\ee^{\ii S/\hbar}\), \(S=\int\big(\tfrac{\mu}{2}\dot\rv^2+\tfrac{\alpha}{r}\big)\dd t\): CM gaussiano; relativo no (Duru–Kleinert)</li>
   </ul>
-  <aside class="n" data-t="10:50 – 11:30"><ol><li>K: amplitud de ir de un punto a otro en t.</li><li>Suma espectral: exacta pero no cerrada en t.</li><li>Partícula libre: sí cerrada (gaussiana).</li><li>Sistema completo: propagador libre de M por K.</li><li>Caminos: CM gaussiano; relativo no.</li></ol></aside>
 </section>
 
 <!-- ============================== 15 ============================== -->
@@ -392,7 +386,6 @@ button:focus-visible,input:focus-visible,select:focus-visible,tr:focus-visible{o
     <div class="box"><h3>Polos</h3>\(\Gamma(l+1-\lambda)\) diverge en \(\lambda=n\) ⇔ \(E=E_n\): los estados ligados. Misma condición que la diapositiva 9.</div>
     <div class="box"><h3>Corte</h3>En \([0,\infty)\): el continuo. La partícula libre solo tiene corte. Forma global: Hostler (1964).</div>
   </div>
-  <aside class="n" data-t="11:30 – 12:10"><ol><li>G: el propagador en energía (transformada de Fourier).</li><li>Denominador E − Eₙ: niveles = polos.</li><li>Continuo = corte; partícula libre solo corte.</li><li>Forma cerrada con las dos soluciones de Whittaker.</li><li>Polos de Γ en λ = n: la misma cuantización.</li></ol></aside>
 </section>
 
 <!-- ============================== 16 ============================== -->
@@ -414,7 +407,6 @@ button:focus-visible,input:focus-visible,select:focus-visible,tr:focus-visible{o
       <p class="muted" style="margin-top:10px">Incertidumbre por par canónico \((x,p_x)\); \(r\) y \(|\pv|\) no lo son.</p>
     </div>
   </div>
-  <aside class="n" data-t="12:10 – 12:55"><ol><li>⟨r⟩ ∝ n²; ⟨p⟩ = 0 (Ehrenfest en estado estacionario).</li><li>1s: ΔxΔpₓ = ħ/√3 &gt; ħ/2, por pares canónicos.</li><li>El producto no depende de μ (a_μ se cancela).</li><li>Virial: ⟨T⟩ = −Eₙ, ⟨V⟩ = 2Eₙ.</li><li>Hellmann–Feynman: derivar respecto a α o μ.</li></ol></aside>
 </section>
 
 <!-- ============================== 17 ============================== -->
@@ -432,7 +424,6 @@ button:focus-visible,input:focus-visible,select:focus-visible,tr:focus-visible{o
     </ul>
     <div><canvas id="cvSup" class="fig" style="height:400px"></canvas><div class="cap">Arriba: \(\ev{z}/\aB\) y \(10\ev{p_z}\aB/\hbar\) (×10 solo de escala). Abajo: \(\Delta z\Delta p_z\), cota R–S y \(\hbar/2\).</div></div>
   </div>
-  <aside class="n" data-t="12:55 – 13:40"><ol><li>⟨z⟩ oscila con ω₂₁, amplitud 0.745 a_μ.</li><li>⟨p_z⟩ desfasado 90°.</li><li>Ehrenfest se cumple exactamente.</li><li>No es Kepler: la fuerza no es lineal.</li><li>ΔzΔp_z siempre sobre la cota R–S (el 2p₀ es muy extendido).</li></ol></aside>
 </section>
 
 <!-- ============================== 18 ============================== -->
@@ -447,7 +438,6 @@ button:focus-visible,input:focus-visible,select:focus-visible,tr:focus-visible{o
       <div class="eq" style="font-size:21px">\[ E^{(1)}_{nl}=-\frac{\mu^2E_n^2}{2c^2}\Big(\frac{1}{m_1^3}+\frac{1}{m_2^3}\Big)\Big[\frac{4n}{l+\frac12}-3\Big] \]</div></li>
   </ul>
   <p class="small muted" style="margin-top:auto">Depende de \(m_1\) y \(m_2\) por separado: más allá del orden no relativista, \(\mu\) deja de bastar.</p>
-  <aside class="n" data-t="13:40 – 14:20"><ol><li>Las aproximaciones sirven para contrastar con lo exacto.</li><li>WKB con Langer: exacto (coincidencia de 1/r).</li><li>Variacional gaussiano: 15 % arriba (sin pico en el origen).</li><li>Relativista: rompe la degeneración en l.</li><li>Depende de m₁ y m₂ por separado.</li></ol></aside>
 </section>
 
 <!-- ============================== 19 ============================== -->
@@ -467,7 +457,6 @@ button:focus-visible,input:focus-visible,select:focus-visible,tr:focus-visible{o
       <ul><li>\(E_n=-\mu/2n^2\)</li><li>\(u_{nl}\) analíticas (nodos)</li><li>Universalidad \(E_n/\Ry\) en \(\mu\)</li><li>\(z_{12}\) con autovectores numéricos</li></ul>
       <p class="muted" style="margin-top:8px">Código en Python (numpy + scipy) y también en esta presentación, en vivo.</p></div>
   </div>
-  <aside class="n" data-t="14:20 – 14:50"><ol><li>Diferencias finitas sobre la ecuación radial.</li><li>μ como parámetro: un código para cualquier par de masas.</li><li>Segunda derivada → diferencia entre vecinos → matriz tridiagonal.</li><li>Valores propios = energías; vectores = funciones.</li><li>u(0) = 0 físico; pared lejana artificial.</li></ol></aside>
 </section>
 
 <!-- ============================== 20 ============================== -->
@@ -489,7 +478,6 @@ button:focus-visible,input:focus-visible,select:focus-visible,tr:focus-visible{o
     </div>
     <div><canvas id="cvConvS" class="fig" style="height:360px"></canvas><div class="cap" id="capConv">Error de \(E_1\) frente al paso \(h\) (log–log), calculado en vivo.</div></div>
   </div>
-  <aside class="n" data-t="14:50 – 15:25"><ol><li>Energías muy distintas; divididas por Ry_μ, idénticas.</li><li>Comprobación numérica de la reducción exacta.</li><li>Error ≲ 10⁻⁵; z₁₂ numérico reproducido.</li><li>Error ∝ h² (pendiente 2).</li><li>Puente: “preparé una simulación interactiva”.</li></ol></aside>
 </section>
 
 <!-- ============================== 21 DEMO A ============================== -->
@@ -516,7 +504,6 @@ button:focus-visible,input:focus-visible,select:focus-visible,tr:focus-visible{o
       <canvas id="cvZ" class="fig" style="height:150px"></canvas>
     </div>
   </div>
-  <aside class="n" data-t="15:25 – 16:05"><ol><li>H → Ps: μ a la mitad, energía a la mitad, tamaño al doble.</li><li>Reproducir: izquierda igual para todo sistema; derecha cada partícula.</li><li>Ps: nubes iguales y opuestas.</li><li>H: el protón casi no se mueve; m₁⟨z₁⟩ + m₂⟨z₂⟩ = 0.</li><li>Momentos iguales y opuestos (P = 0).</li></ol></aside>
 </section>
 
 <!-- ============================== 22 DEMO B ============================== -->
@@ -544,7 +531,6 @@ button:focus-visible,input:focus-visible,select:focus-visible,tr:focus-visible{o
       <canvas id="cvConv" class="fig" style="height:180px"></canvas>
     </div>
   </div>
-  <aside class="n" data-t="16:05 – 16:40"><ol><li>Solver en vivo: diagonaliza la matriz tridiagonal en el navegador.</li><li>Tabla: numérico vs exacto, en eV del sistema elegido.</li><li>Bajar R_max a 15: estados de caja (la pared aprieta).</li><li>Calcular convergencia: pendiente ≈ 2.</li><li>“Con esto vuelvo a la presentación para cerrar”.</li></ol></aside>
 </section>
 
 <!-- ============================== 23 ============================== -->
@@ -566,7 +552,6 @@ button:focus-visible,input:focus-visible,select:focus-visible,tr:focus-visible{o
       <li>Muónico: \(|\psi(0)|^2\) unas \(6\times10^6\) veces mayor ⇒ sensible al radio del protón</li>
     </ul>
   </div>
-  <aside class="n" data-t="16:40 – 17:20"><ol><li>Tamaño ∝ 1/μ, energía ∝ μ.</li><li>Positronio: mitad de energía, doble tamaño.</li><li>Muónico: keV y femtómetros.</li><li>H vs D: corrimiento isotópico, descubrimiento del deuterio.</li><li>|ψ(0)|² ∝ μ³: radio del protón.</li></ol></aside>
 </section>
 
 <!-- ============================== 24 ============================== -->
@@ -583,21 +568,19 @@ button:focus-visible,input:focus-visible,select:focus-visible,tr:focus-visible{o
     <li>Asimetría de representaciones: local en \(\rv\), integral en \(\pv\)</li>
   </ol>
   <p style="margin-top:auto;font:600 34px var(--font-display);color:var(--accent)">Gracias</p>
-  <aside class="n" data-t="17:20 – 17:50"><ol><li>Reducción exacta: CM libre + problema interno con μ.</li><li>Ligadura: discreto infinito + continuo.</li><li>Cuantización por condiciones de frontera.</li><li>Nodos y degeneración n².</li><li>Escalas dependientes de μ; Green con polos; posición vs momentum.</li></ol></aside>
 </section>
 
 </div>
 </div>
 
-<div class="notes" id="notes" hidden><h4 id="notesT"></h4><div id="notesB"></div></div>
+<div id="notes" hidden><span id="notesT"></span><span id="notesB"></span></div>
 <nav class="bar" aria-label="Controles de la presentación">
   <div class="prog" id="prog"></div>
   <button id="prev" aria-label="Diapositiva anterior">←</button>
   <span class="count" id="count">1 / 24</span>
   <button id="next" aria-label="Diapositiva siguiente">→</button>
   <span class="ttl" id="ttl"></span>
-  <span class="hint">← → navegar · N notas · F pantalla completa</span>
-  <button id="btnNotes" aria-pressed="false">Notas</button>
+  <span class="hint">← → navegar · F pantalla completa</span>
   <button id="btnFs">Pantalla completa</button>
 </nav>
 
@@ -845,7 +828,7 @@ function show(i,push=true){
 }
 $("prev").addEventListener("click",()=>show(cur-1)); $("next").addEventListener("click",()=>show(cur+1));
 function toggleNotes(){ const h=!$("notes").hidden; $("notes").hidden=h; $("btnNotes").setAttribute("aria-pressed",String(!h)); }
-$("btnNotes").addEventListener("click",toggleNotes);
+
 function toggleFs(){ try{ if(document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen().catch(()=>{}); }catch(e){} }
 $("btnFs").addEventListener("click",toggleFs);
 document.addEventListener("keydown",e=>{
@@ -853,7 +836,7 @@ document.addEventListener("keydown",e=>{
   if(["ArrowRight","PageDown"].includes(e.key)||(e.key===" "&&tag!=="button"&&tag!=="tr")){ e.preventDefault(); show(cur+1); }
   else if(["ArrowLeft","PageUp"].includes(e.key)){ e.preventDefault(); show(cur-1); }
   else if(e.key==="Home") show(0); else if(e.key==="End") show(slides.length-1);
-  else if(e.key==="n"||e.key==="N") toggleNotes(); else if(e.key==="f"||e.key==="F") toggleFs();
+  else if(e.key==="f"||e.key==="F") toggleFs();
 });
 function fromHash(){ const m=/^#s(\d+)$/.exec(location.hash); return m? +m[1]-1: 0; }
 window.addEventListener("hashchange",()=>show(fromHash(),false));
@@ -866,3 +849,6 @@ if(document.fonts&&document.fonts.ready) document.fonts.ready.then(retheme);
 readTheme(); syncSliders(); fit(); show(fromHash(),false); requestAnimationFrame(loop);
 })();
 </script>
+
+</body>
+</html>
