@@ -1,0 +1,868 @@
+<title>Coulomb de dos cuerpos</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@500;600;700&display=swap">
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath: [["\\(", "\\)"]], displayMath: [["\\[", "\\]"]],
+    macros: {
+      aB: "a_\\mu", Ry: "\\mathrm{Ry}_\\mu", ii: "\\mathrm{i}", ee: "\\mathrm{e}", dd: "\\mathrm{d}",
+      Rv: "\\mathbf{R}", rv: "\\mathbf{r}", Pv: "\\mathbf{P}", pv: "\\mathbf{p}", Lv: "\\mathbf{L}",
+      ket: ["\\left|#1\\right\\rangle", 1], bra: ["\\left\\langle #1\\right|", 1],
+      ev: ["\\left\\langle #1\\right\\rangle", 1],
+      dyad: ["|#1\\rangle\\langle #1|", 1],
+      mel: ["\\langle #1|#2|#3\\rangle", 3]
+    }
+  },
+  svg: { fontCache: "global" },
+  options: { enableMenu: false },
+  startup: { typeset: true }
+};
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.js" async></script>
+<style>
+/* Layout: escenario 16:9 de 1280×720 escalado al viewport; barra de control fija abajo; panel de notas del orador desplegable */
+:root{
+  --bg:#dfe5eb; --slide:#ffffff; --ink:#15202b; --muted:#566475; --line:#d3dbe3;
+  --accent:#1d6b88; --accent-soft:#e3f0f5; --p1:#2a5fc4; --p2:#d0602a; --good:#2f7d4f; --warn:#b3412f;
+  --bar:#15202b; --bar-ink:#e5ecf2;
+  --font-ui:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-display:"IBM Plex Sans Condensed","IBM Plex Sans",system-ui,sans-serif;
+  --font-data:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#0a0f14; --slide:#141c24; --ink:#e5ecf2; --muted:#93a2b2; --line:#283541;
+  --accent:#62b6d4; --accent-soft:#17303b; --p1:#77a6ff; --p2:#ff9b62; --good:#6cc391; --warn:#ff8a73;
+  --bar:#05080b; --bar-ink:#e5ecf2; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#0a0f14; --slide:#141c24; --ink:#e5ecf2; --muted:#93a2b2; --line:#283541;
+  --accent:#62b6d4; --accent-soft:#17303b; --p1:#77a6ff; --p2:#ff9b62; --good:#6cc391; --warn:#ff8a73;
+  --bar:#05080b; --bar-ink:#e5ecf2; color-scheme:dark }
+
+html,body{height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-ui);overflow:hidden;
+  padding-left:max(0px,env(safe-area-inset-left,0px));padding-right:max(0px,env(safe-area-inset-right,0px))}
+*{box-sizing:border-box}
+.viewport{position:fixed;inset:0 0 calc(52px + env(safe-area-inset-bottom,0px)) 0;display:grid;place-items:center;overflow:hidden;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.stage{width:1280px;height:720px;position:relative;transform-origin:center center;background:var(--slide);
+  box-shadow:0 10px 40px rgba(0,0,0,.18);border-radius:6px;overflow:hidden;flex:none}
+.slide{position:absolute;inset:0;padding:40px 60px 34px;display:none;flex-direction:column;gap:16px;font-size:23px;line-height:1.42}
+.slide.on{display:flex}
+.eyebrow{font:600 14px var(--font-ui);letter-spacing:.09em;text-transform:uppercase;color:var(--accent)}
+.slide h2{font:700 40px/1.08 var(--font-display);margin:0;letter-spacing:-.005em;text-wrap:balance}
+.slide p{margin:0}
+.slide ul{margin:0;padding-left:1.1em;display:flex;flex-direction:column;gap:8px}
+.slide li::marker{color:var(--accent)}
+.muted{color:var(--muted)}
+.small{font-size:19px;line-height:1.38}
+.xs{font-size:16px;line-height:1.35}
+.row{display:grid;gap:28px;align-items:start;min-height:0}
+.c2{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.c3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.c64{grid-template-columns:minmax(0,1.5fr) minmax(0,1fr)}
+.c46{grid-template-columns:minmax(0,1fr) minmax(0,1.45fr)}
+.box{background:var(--accent-soft);border-left:4px solid var(--accent);padding:12px 18px;border-radius:0 6px 6px 0}
+.box h3{font:600 17px var(--font-ui);letter-spacing:.05em;text-transform:uppercase;color:var(--accent);margin:0 0 4px}
+.key{border:2px solid var(--accent);padding:10px 18px;border-radius:6px}
+.col h3{font:600 19px var(--font-ui);margin:0 0 6px;color:var(--accent)}
+.eq{font-size:25px}
+mjx-container[display="true"]{margin:.35em 0 !important}
+mjx-container{color:var(--ink)}
+table.t{border-collapse:collapse;font-size:20px;width:100%}
+table.t th,table.t td{padding:6px 12px;border-bottom:1px solid var(--line);text-align:left}
+table.t th{font:600 16px var(--font-ui);letter-spacing:.02em;color:var(--muted)}
+table.t td.n{font-family:var(--font-data);font-variant-numeric:tabular-nums;text-align:right}
+canvas{display:block;width:100%;background:var(--slide)}
+.fig{border:1px solid var(--line);border-radius:6px}
+.cap{font-size:15px;color:var(--muted);margin-top:4px}
+.foot{margin-top:auto;font-size:14px;color:var(--muted);display:flex;justify-content:space-between;gap:20px}
+.pill{display:inline-block;font:600 13px var(--font-ui);letter-spacing:.06em;text-transform:uppercase;padding:3px 10px;border-radius:999px;background:var(--accent);color:var(--slide)}
+.tag{font:500 15px var(--font-data);color:var(--muted)}
+
+/* portada */
+.cover{justify-content:center;gap:22px;padding:60px 80px;border-left:14px solid var(--accent)}
+.cover h1{font:700 64px/1.02 var(--font-display);margin:0;letter-spacing:-.01em;max-width:15ch}
+.cover .sub{font-size:26px;color:var(--muted);max-width:40ch}
+.cover .meta{font-size:19px;line-height:1.5;margin-top:24px}
+.cover canvas{position:absolute;right:56px;top:120px;width:470px;height:420px;background:transparent}
+
+/* demo */
+.demo{gap:12px;padding:30px 44px 26px}
+.demo h2{font-size:32px}
+.ctrls{display:flex;flex-wrap:wrap;gap:6px 8px;align-items:center}
+.ctrls button,.btn{font:500 15px var(--font-ui);border:1px solid var(--line);background:var(--slide);color:var(--ink);padding:5px 11px;border-radius:999px;cursor:pointer}
+.ctrls button[aria-pressed="true"],.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--slide)}
+.sl{display:grid;grid-template-columns:76px minmax(0,1fr) 74px;gap:8px;align-items:center;font-size:15px}
+.sl label{color:var(--muted)}
+.sl output{font:500 15px var(--font-data);text-align:right;font-variant-numeric:tabular-nums}
+input[type=range]{width:100%;accent-color:var(--accent)}
+select{font:500 15px var(--font-ui);color:var(--ink);background:var(--slide);border:1px solid var(--line);border-radius:6px;padding:4px 8px}
+.ro{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.ro div{background:var(--slide);padding:5px 9px;display:flex;flex-direction:column}
+.ro span{font-size:12px;color:var(--muted);letter-spacing:.02em}
+.ro strong{font:500 16px var(--font-data);font-variant-numeric:tabular-nums}
+.ro .hl strong{color:var(--accent)}
+.kv{font-size:15px;display:flex;flex-wrap:wrap;gap:4px 16px}
+.kv b{font:500 15px var(--font-data);font-variant-numeric:tabular-nums}
+.ok{color:var(--good);font-weight:600}
+table.sv{border-collapse:collapse;width:100%;font-size:15px}
+table.sv th,table.sv td{padding:4px 7px;border-bottom:1px solid var(--line);text-align:right;white-space:nowrap}
+table.sv th{font-weight:600;color:var(--muted);font-size:12px;letter-spacing:.04em;text-transform:uppercase}
+table.sv td{font-family:var(--font-data);font-variant-numeric:tabular-nums}
+table.sv th:first-child,table.sv td:first-child{text-align:left}
+table.sv tr.sel td{background:var(--accent-soft)}
+table.sv tbody tr{cursor:pointer}
+
+/* barra y notas */
+.bar{position:fixed;left:0;right:0;bottom:0;height:calc(52px + env(safe-area-inset-bottom,0px));padding-bottom:env(safe-area-inset-bottom,0px);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  background:var(--bar);color:var(--bar-ink);display:flex;align-items:center;gap:10px;font-size:14px;z-index:5}
+.bar button{font:500 14px var(--font-ui);background:transparent;color:var(--bar-ink);border:1px solid rgba(229,236,242,.3);border-radius:6px;padding:6px 12px;cursor:pointer}
+.bar button:hover{border-color:rgba(229,236,242,.7)}
+.bar .count{font-family:var(--font-data);min-width:62px;text-align:center}
+.bar .ttl{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;opacity:.8}
+.bar .prog{position:absolute;left:0;top:0;height:3px;background:var(--accent);transition:width .2s}
+.hint{opacity:.6;font-size:12px}
+@media (max-width:640px){.hint,.bar .ttl{display:none}}
+.notes{position:fixed;left:0;right:0;bottom:calc(52px + env(safe-area-inset-bottom,0px));max-height:38vh;overflow:auto;background:var(--slide);border-top:2px solid var(--accent);
+  padding:14px max(20px,env(safe-area-inset-left,0px)) 16px;z-index:4;font-size:16px;line-height:1.45;box-shadow:0 -8px 30px rgba(0,0,0,.15)}
+.notes h4{margin:0 0 6px;font:600 13px var(--font-ui);letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+.notes ol{margin:0;padding-left:1.3em}
+aside.n{display:none}
+button:focus-visible,input:focus-visible,select:focus-visible,tr:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media (prefers-reduced-motion: reduce){.bar .prog{transition:none}}
+</style>
+
+<div class="viewport" id="vp">
+<div class="stage" id="stage">
+
+<!-- ============================== 1 ============================== -->
+<section class="slide cover" data-title="Portada">
+  <span class="pill" style="align-self:flex-start">Fenomenología N.º 13</span>
+  <h1>Problema Coulombiano de dos cuerpos con masas arbitrarias</h1>
+  <p class="sub">Tres dimensiones · solución exacta tras la reducción centro de masa – coordenada relativa</p>
+  <div class="meta">
+    <b>Marcos A. Torres</b><br>
+    Mecánica Cuántica Avanzada · Programa Académico de Física<br>
+    Universidad Distrital Francisco José de Caldas<br>
+    <span class="muted">Prof. John Hernán Díaz Forero</span>
+  </div>
+  <canvas id="cvCover" aria-hidden="true"></canvas>
+  <aside class="n" data-t="0:00 – 0:30"><ol><li>Fenomenología 13: Coulomb de dos cuerpos, masas arbitrarias, 3D.</li><li>Caso conocido: el hidrógeno, pero aquí las dos partículas se mueven.</li><li>Tesis: se resuelve exactamente reduciéndolo a un cuerpo con masa reducida.</li><li>Ruta: el itinerario de la guía.</li><li>Puente: “veamos qué sistema físico describimos”.</li></ol></aside>
+</section>
+
+<!-- ============================== 2 ============================== -->
+<section class="slide" data-title="Fenomenología">
+  <div class="eyebrow">Contexto físico</div>
+  <h2>Un Hamiltoniano, muchas escalas</h2>
+  <div class="row c2" style="flex:1">
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div class="eq" style="font-size:21px">\[ V(\rv_1,\rv_2)=-\frac{\alpha}{|\rv_1-\rv_2|},\qquad \alpha=-\frac{q_1q_2}{4\pi\varepsilon_0}>0 \]</div>
+      <ul>
+        <li>Hidrógeno \(e^-p\), deuterio \(e^-d\)</li>
+        <li>Positronio \(e^-e^+\) (masas iguales)</li>
+        <li>Hidrógeno muónico \(\mu^-p\)</li>
+        <li>Excitones de Wannier (\(\alpha\to\alpha/\varepsilon_r\))</li>
+      </ul>
+      <div class="box small"><h3>Foco del trabajo</h3>El potencial depende solo de la separación: el problema se reduce <b>exactamente</b> a un cuerpo con la masa reducida \(\mu\).</div>
+      <p class="xs muted">Dos partículas distinguibles · 3D · no relativista · \(\partial_t\hat H=0\)</p>
+    </div>
+    <div><canvas id="cvPot" class="fig" style="height:420px"></canvas><div class="cap">Potencial efectivo para \(l=0,1,2\) y niveles \(E_n\) (líneas punteadas). Sombreado: continuo.</div></div>
+  </div>
+  <aside class="n" data-t="0:30 – 1:15"><ol><li>El potencial depende solo de la distancia (dilo despacio).</li><li>α &gt; 0: caso atractivo.</li><li>Mismo Hamiltoniano para H, D, Ps, H muónico, excitones: solo cambia μ.</li><li>Gráfica: niveles discretos que se juntan en cero; continuo arriba.</li><li>Puente: “antes de la cuántica, la física clásica”.</li></ol></aside>
+</section>
+
+<!-- ============================== 3 ============================== -->
+<section class="slide" data-title="Antecedente clásico">
+  <div class="eyebrow">Correspondencia clásica</div>
+  <h2>Kepler de dos cuerpos</h2>
+  <div class="eq">\[ H_{\rm cl}=\frac{\pv_1^2}{2m_1}+\frac{\pv_2^2}{2m_2}-\frac{\alpha}{|\rv_1-\rv_2|}\ \xrightarrow{\ \Rv,\ \rv\ }\ H_{\rm cl}=\frac{\Pv^2}{2M}+\frac{\pv^2}{2\mu}-\frac{\alpha}{r} \]</div>
+  <div class="eq" style="font-size:22px">\[ \Rv=\frac{m_1\rv_1+m_2\rv_2}{M},\quad \rv=\rv_1-\rv_2,\quad M=m_1+m_2,\quad \mu=\frac{m_1m_2}{m_1+m_2},\quad \dot\Pv=0,\quad \mu\ddot\rv=-\alpha\frac{\rv}{r^3} \]</div>
+  <div class="row c3 small">
+    <div class="col"><h3>Permanece</h3>Separación CM / relativa.<br>Se conservan \(\Pv\), \(E\) y \(\Lv\).</div>
+    <div class="col"><h3>Cambia</h3>\(E\) sigue conservada pero solo toma valores discretos, con un mínimo. Solo \(L^2\) y \(L_z\) quedan definidos.</div>
+    <div class="col"><h3>Es nuevo</h3>Nodos en \(\psi\) · estados estables con \(l=0\) · espectro discreto + continuo.</div>
+  </div>
+  <p class="xs muted" style="margin-top:auto">Conservada: no cambia en el tiempo. Discreta: solo ciertos valores están permitidos. La energía cumple las dos.</p>
+  <aside class="n" data-t="1:15 – 2:05"><ol><li>Kepler: “un planeta y una estrella”.</li><li>CM + relativa: partícula libre de masa M + un cuerpo de masa μ.</li><li>Permanece: separación y cantidades conservadas.</li><li>Cambia: se siguen conservando, pero solo ciertos valores, y hay un mínimo.</li><li>Es nuevo: nodos, estados sin momento angular, espectro discreto + continuo.</li></ol></aside>
+</section>
+
+<!-- ============================== 4 ============================== -->
+<section class="slide" data-title="Formulación abstracta">
+  <div class="eyebrow">Formulación postulacional</div>
+  <h2>Formulación abstracta</h2>
+  <div class="row c2">
+    <ul>
+      <li><b>Estados:</b> \(\mathcal H=\mathcal H_1\otimes\mathcal H_2\cong L^2(\mathbb R^6)\), \(\Psi(\rv_1,\rv_2)\), \(\int|\Psi|^2=1\)</li>
+      <li><b>Observables:</b> \([\hat x_{ai},\hat p_{bj}]=\ii\hbar\,\delta_{ab}\delta_{ij}\)</li>
+      <li><b>Medición:</b> resultados = espectro de \(\hat A\); \(P(a)=\mel{\psi}{\hat\Pi_a}{\psi}\)</li>
+      <li><b>Valor esperado:</b> \(\ev{A}=\mel{\psi}{\hat A}{\psi}\)</li>
+    </ul>
+    <div>
+      <p class="small"><b>Dinámica</b></p>
+      <div class="eq">\[ \ii\hbar\frac{\dd}{\dd t}\ket{\Psi(t)}=\hat H\ket{\Psi(t)} \]</div>
+      <div class="eq">\[ \hat H=\frac{\hat\pv_1^2}{2m_1}+\frac{\hat\pv_2^2}{2m_2}-\frac{\alpha}{|\hat\rv_1-\hat\rv_2|} \]</div>
+      <div class="box small">Cuantización canónica de \(H_{\rm cl}\). Como \(\partial_t\hat H=0\): \(\hat U(t)=\ee^{-\ii\hat Ht/\hbar}\).</div>
+    </div>
+  </div>
+  <p class="small muted" style="margin-top:auto">Seis variables: todas posiciones (tres por partícula). El momento actúa como operador, \(\hat\pv=-\ii\hbar\nabla\).</p>
+  <aside class="n" data-t="2:05 – 2:55"><ol><li>Estados: seis variables, todas posiciones, tres por partícula.</li><li>Observables: solo no conmutan posición y momento de la misma partícula en la misma dirección.</li><li>Medición: resultados = valores propios; probabilidades = proyectores.</li><li>Dinámica: Schrödinger abstracta; Ĥ cuantizado; Û = e^(−iĤt/ħ).</li><li>Puente: “¿se puede hacer el cambio a CM con operadores?”</li></ol></aside>
+</section>
+
+<!-- ============================== 5 ============================== -->
+<section class="slide" data-title="Transformación canónica">
+  <div class="eyebrow">Núcleo · 1 de 2</div>
+  <h2>Transformación canónica</h2>
+  <div class="eq">\[ \hat\Rv=\frac{m_1\hat\rv_1+m_2\hat\rv_2}{M},\qquad \hat\rv=\hat\rv_1-\hat\rv_2,\qquad \hat\Pv=\hat\pv_1+\hat\pv_2,\qquad \hat\pv=\frac{m_2\hat\pv_1-m_1\hat\pv_2}{M} \]</div>
+  <div class="row c64">
+    <table class="t">
+      <thead><tr><th>Conmutador</th><th>Cálculo</th><th>Resultado</th></tr></thead>
+      <tbody>
+        <tr><td>\([\hat R_i,\hat P_j]\)</td><td>\(\big(\tfrac{m_1}{M}+\tfrac{m_2}{M}\big)\ii\hbar\delta_{ij}\)</td><td>\(\ii\hbar\delta_{ij}\)</td></tr>
+        <tr><td>\([\hat r_i,\hat p_j]\)</td><td>\(\big(\tfrac{m_2}{M}+\tfrac{m_1}{M}\big)\ii\hbar\delta_{ij}\)</td><td>\(\ii\hbar\delta_{ij}\)</td></tr>
+        <tr><td>\([\hat R_i,\hat p_j]\)</td><td>\(\big(\tfrac{m_1m_2}{M^2}-\tfrac{m_2m_1}{M^2}\big)\ii\hbar\delta_{ij}\)</td><td>\(0\)</td></tr>
+        <tr><td>\([\hat r_i,\hat P_j]\)</td><td>\((1-1)\,\ii\hbar\delta_{ij}\)</td><td>\(0\)</td></tr>
+      </tbody>
+    </table>
+    <div class="key small"><b>\((\hat\Rv,\hat\Pv)\)</b> y <b>\((\hat\rv,\hat\pv)\)</b> son dos pares canónicos <b>independientes</b>: como dos partículas que no se ven entre sí.</div>
+  </div>
+  <aside class="n" data-t="2:55 – 3:45"><ol><li>Mismas fórmulas que en clásica, ahora con operadores.</li><li>En cuántica hay que verificar los conmutadores.</li><li>Diagonal: iħ (cada par es canónico).</li><li>Cruzados: 0 (pares independientes); m₁m₂ con signo opuesto.</li><li>“Dos partículas que no se ven entre sí”.</li></ol></aside>
+</section>
+
+<!-- ============================== 6 ============================== -->
+<section class="slide" data-title="Reducción exacta">
+  <div class="eyebrow">Núcleo · 2 de 2</div>
+  <h2>Reducción exacta</h2>
+  <p class="small">\(\hat\pv_1=\tfrac{m_1}{M}\hat\Pv+\hat\pv,\ \ \hat\pv_2=\tfrac{m_2}{M}\hat\Pv-\hat\pv\) \(\Rightarrow\) los términos \(\pm\tfrac1M\hat\Pv\cdot\hat\pv\) se cancelan</p>
+  <div class="eq">\[ \boxed{\ \hat H=\underbrace{\frac{\hat\Pv^2}{2M}}_{\hat H_{\rm CM}}+\underbrace{\frac{\hat\pv^2}{2\mu}-\frac{\alpha}{\hat r}}_{\hat H_{\rm rel}}\ },\qquad [\hat H_{\rm CM},\hat H_{\rm rel}]=0 \]</div>
+  <div class="eq">\[ \Psi=\frac{\ee^{\ii\Pv\cdot\Rv/\hbar}}{(2\pi\hbar)^{3/2}}\,\psi(\rv),\qquad \Big(-\frac{\hbar^2}{2\mu}\nabla^2-\frac{\alpha}{r}\Big)\psi=E\psi,\qquad E_{\rm tot}=\frac{P^2}{2M}+E \]</div>
+  <div class="box small"><h3>Condiciones de la reducción exacta</h3>(i) transformación canónica; (ii) \(V\) depende solo de \(\rv\). Toda la física interna depende de las masas <b>solo a través de \(\mu\)</b>; \(M\) solo afecta al centro de masa.</div>
+  <aside class="n" data-t="3:45 – 4:45"><ol><li>Momento de cada partícula: total repartido por masas ± el relativo.</li><li>Cruzados: uno + y uno −, se cancelan exactamente.</li><li>Partícula libre de masa M + hidrógeno con mₑ → μ.</li><li>Exacta por: transformación canónica + potencial que solo depende de la distancia.</li><li>La física interna solo ve μ. (Campo uniforme: sigue separando, rompe simetría esférica.)</li></ol></aside>
+</section>
+
+<!-- ============================== 7 ============================== -->
+<section class="slide" data-title="Simetrías">
+  <div class="eyebrow">Simetrías y álgebra</div>
+  <h2>Simetrías y estructura algebraica</h2>
+  <div class="row c2">
+    <div>
+      <ul>
+        <li>Traslaciones: \([\hat H,\hat\Pv]=0\)</li>
+        <li>Rotaciones: \([\hat H_{\rm rel},\hat L^2]=[\hat H_{\rm rel},\hat L_z]=0\)</li>
+        <li>Paridad: \([\hat H_{\rm rel},\hat\Pi]=0\), \(\hat\Pi Y_{lm}=(-1)^lY_{lm}\)</li>
+      </ul>
+      <p class="small" style="margin-top:16px">Conjunto completo: \(\{\hat H_{\rm rel},\hat L^2,\hat L_z\}\to(n,l,m)\)</p>
+      <p class="small">\([\hat H,\hat L_\pm]=0\ \Rightarrow\ E\) no depende de \(m\)</p>
+    </div>
+    <div class="box">
+      <h3>¿Escalera tipo oscilador?</h3>
+      <p class="small">No: \(E_n\) no está equiespaciado y se acumula en \(0\). Sí existe la factorización radial:</p>
+      <div class="eq">\[ \hat A_l^\dagger\hat A_l=\hat H_l+\frac{\Ry}{(l+1)^2},\qquad \hat H_{l+1}\hat A_l=\hat A_l\hat H_l \]</div>
+      <p class="small">Escalera en \(l\) a energía fija → se sigue por la vía diferencial.</p>
+    </div>
+  </div>
+  <aside class="n" data-t="4:45 – 5:35"><ol><li>Traslaciones → P conservado → CM libre.</li><li>Rotaciones → L conservado → l, m; E no depende de m.</li><li>Paridad → reglas de selección (⟨1s|z|1s⟩ = 0).</li><li>Conjunto completo {Ĥ, L², L_z} → (n, l, m).</li><li>No hay escalera global; sí factorización radial; sigo con la ecuación diferencial.</li></ol></aside>
+</section>
+
+<!-- ============================== 8 ============================== -->
+<section class="slide" data-title="Ecuación radial">
+  <div class="eyebrow">Representación de posición</div>
+  <h2>Ecuación radial y condiciones de frontera</h2>
+  <p class="small">\(\psi(\rv)=\dfrac{u(r)}{r}Y_{lm}(\theta,\varphi)\), \(\quad\nabla^2=\dfrac1r\partial_r^2\,r-\dfrac{\hat L^2}{\hbar^2r^2}\)</p>
+  <div class="eq">\[ -\frac{\hbar^2}{2\mu}u''+\underbrace{\Big[\frac{\hbar^2l(l+1)}{2\mu r^2}-\frac{\alpha}{r}\Big]}_{V_{\rm ef}(r)}u=Eu \]</div>
+  <div class="row c2 small">
+    <div class="box"><h3>Cerca de r = 0</h3>\(u\sim r^{l+1}\) o \(r^{-l}\). La segunda se descarta: no normalizable (\(l\ge1\)) o \(\nabla^2\frac1r=-4\pi\delta^3(\rv)\) (\(l=0\)). <b>\(u(0)=0\)</b></div>
+    <div class="box"><h3>Para r → ∞</h3>\(u\sim\ee^{\pm\kappa r}\), \(\kappa=\sqrt{-2\mu E}/\hbar\). La creciente no se normaliza. <b>\(u(\infty)=0\)</b></div>
+  </div>
+  <p class="small muted" style="margin-top:auto">Dos condiciones para una ecuación de segundo orden: solo ciertas energías las cumplen a la vez.</p>
+  <aside class="n" data-t="5:35 – 6:35"><ol><li>En cartesianas 1/r mezcla x, y, z; en esféricas la parte angular es L².</li><li>Ecuación en 1D con potencial efectivo: Coulomb + barrera centrífuga.</li><li>Origen: r^(l+1) sí, r^(−l) no → u(0) = 0.</li><li>Infinito: exponencial que decae → u(∞) = 0.</li><li>Dos condiciones para una ecuación de 2.º orden → cuantización.</li></ol></aside>
+</section>
+
+<!-- ============================== 9 ============================== -->
+<section class="slide" data-title="Cuantización">
+  <div class="eyebrow">Solución diferencial</div>
+  <h2>Cuantización: Whittaker → Kummer → Laguerre</h2>
+  <p class="small">\(\rho=2\kappa r,\quad \lambda=\dfrac{1}{\kappa\aB},\quad \aB=\dfrac{\hbar^2}{\mu\alpha}\)</p>
+  <div class="eq" style="font-size:22px">\[ \frac{\dd^2u}{\dd\rho^2}+\Big[-\frac14+\frac\lambda\rho-\frac{l(l+1)}{\rho^2}\Big]u=0\ \ \xrightarrow{\ u=\rho^{l+1}\ee^{-\rho/2}w\ }\ \ \rho w''+(2l+2-\rho)w'-(l+1-\lambda)w=0 \]</div>
+  <div class="row c2 small">
+    <ul>
+      <li>Solución regular: \(w=M(l+1-\lambda,\,2l+2,\,\rho)\), serie con \(\dfrac{c_{j+1}}{c_j}=\dfrac{j+l+1-\lambda}{(j+1)(j+2l+2)}\)</li>
+      <li>Si es infinita, \(c_{j+1}/c_j\approx1/j\): igual que \(\ee^{\rho}\) ⇒ \(u\sim\ee^{+\rho/2}\), no normalizable</li>
+    </ul>
+    <div class="box"><h3>La serie debe cortarse</h3>
+      <div class="eq">\[ l+1-\lambda=-n_r\ \Rightarrow\ \lambda=n=n_r+l+1,\quad \kappa=\frac{1}{n\aB} \]</div>
+      Como la partícula en una caja: las “paredes” son el origen y el infinito.</div>
+  </div>
+  <aside class="n" data-t="6:35 – 7:35"><ol><li>Sin unidades: λ guarda la energía (Whittaker).</li><li>Separar los extremos: queda w (Kummer), serie de potencias.</li><li>Serie infinita ≈ e^ρ: explota.</li><li>Debe cortarse: polinomio, solo si λ = n entero.</li><li>Analogía: partícula en una caja. n_r = nodos radiales.</li></ol></aside>
+</section>
+
+<!-- ============================== 10 ============================== -->
+<section class="slide" data-title="Espectro">
+  <div class="eyebrow">Problema espectral</div>
+  <h2>Espectro</h2>
+  <div class="eq">\[ \boxed{\,E_n=-\frac{\mu\alpha^2}{2\hbar^2n^2}=-\frac{\Ry}{n^2},\ \ n=1,2,\dots\,}\qquad g_n=\sum_{l=0}^{n-1}(2l+1)=n^2 \]</div>
+  <div class="row c2 small">
+    <ul>
+      <li><b>Mixto:</b> discreto infinito (\(E\lt0\)), acumulado en \(0^-\); continuo \([0,\infty)\)</li>
+      <li>\(2l+1\): rotaciones; independencia en \(l\): propia de \(1/r\)</li>
+      <li>\(\alpha\lt0\) (repulsivo): solo continuo</li>
+    </ul>
+    <div class="box"><h3>Análisis dimensional</h3>
+      <div class="eq" style="font-size:22px">\[ [\aB]=\frac{\mathrm{J^2s^2}}{\mathrm{kg\,J\,m}}=\mathrm m,\qquad [\Ry]=\frac{\mathrm{kg\,J^2m^2}}{\mathrm{J^2s^2}}=\mathrm J \]</div>
+      Con \(\hbar,\mu,\alpha\) no hay número adimensional: \(E\propto\mu\), longitudes \(\propto1/\mu\).</div>
+  </div>
+  <aside class="n" data-t="7:35 – 8:25"><ol><li>Eₙ = −Ry_μ/n², con Ry_μ ∝ μ.</li><li>Mixto: discreto infinito acumulado en 0 + continuo.</li><li>Degeneración n²: 2l+1 por rotaciones; independencia en l propia de 1/r.</li><li>Análisis dimensional: solo una longitud y una energía.</li><li>Energía ∝ μ, tamaño ∝ 1/μ.</li></ol></aside>
+</section>
+
+<!-- ============================== 11 ============================== -->
+<section class="slide" data-title="Funciones de onda">
+  <div class="eyebrow">Solución en posición</div>
+  <h2>Funciones de onda</h2>
+  <div class="eq" style="font-size:22px">\[ R_{nl}(r)=\sqrt{\Big(\frac{2}{n\aB}\Big)^3\frac{(n-l-1)!}{2n\,(n+l)!}}\;\ee^{-\rho/2}\rho^lL^{2l+1}_{n-l-1}(\rho),\qquad\rho=\frac{2r}{n\aB} \]</div>
+  <div class="row c46" style="flex:1">
+    <ul class="small">
+      <li>\(n-l-1\) nodos radiales</li>
+      <li>\(\psi_{100}=\ee^{-r/\aB}/\sqrt{\pi\aB^3}\)</li>
+      <li>H: \(\mu=0.99946\,m_e\), \(E_1=-13.598\) eV</li>
+      <li>Ps: \(\mu=m_e/2\), \(E_1=-6.80\) eV, \(\aB=2a_0\)</li>
+      <li class="muted">Solo cambia \(\mu\): ninguna fórmula cambia.</li>
+    </ul>
+    <div><canvas id="cvWf" class="fig" style="height:330px"></canvas><div class="cap">\(u_{nl}=rR_{nl}\): líneas = Laguerre; círculos = diferencias finitas (calculado en vivo).</div></div>
+  </div>
+  <aside class="n" data-t="8:25 – 9:10"><ol><li>Laguerre: el polinomio que salió al cortar la serie.</li><li>Partes: normalización, decaimiento, comportamiento en el origen.</li><li>Gráfica: líneas exactas, círculos numéricos; coinciden.</li><li>Nodos n−l−1; todas parten de u(0) = 0.</li><li>Chequeo H y Ps cambiando solo μ.</li></ol></aside>
+</section>
+
+<!-- ============================== 12 ============================== -->
+<section class="slide" data-title="Evolución temporal">
+  <div class="eyebrow">Operador de evolución</div>
+  <h2>Evolución temporal y estado inicial</h2>
+  <div class="eq" style="font-size:21px">\[ \hat U(t)=\sum_{nlm}\ee^{-\ii E_nt/\hbar}\dyad{nlm}+\sum_{lm}\int_0^\infty\!\dd E\,\ee^{-\ii Et/\hbar}\dyad{E\,lm},\qquad \hat U_{\rm tot}=\ee^{-\ii\hat\Pv^2t/2M\hbar}\,\hat U \]</div>
+  <div class="row c64" style="flex:1">
+    <div class="small">
+      <div class="eq" style="font-size:21px">\[ \ket{\psi(t)}=\tfrac{\ee^{-\ii E_1t/\hbar}}{\sqrt2}\big(\ket{1s}+\ee^{-\ii\omega_{21}t}\ket{2p_0}\big),\quad \omega_{21}=\frac{3\Ry}{4\hbar} \]</div>
+      <div class="eq" style="font-size:21px">\[ |\psi(\rv,t)|^2=\tfrac12\big[\psi_{1s}^2+\psi_{2p_0}^2+2\psi_{1s}\psi_{2p_0}\cos\omega_{21}t\big] \]</div>
+      <ul>
+        <li>Interferencia \(\propto\cos\theta\): la nube oscila en \(z\) (H: \(T_{21}\approx4.1\times10^{-16}\) s)</li>
+        <li>\(P(E_1)=P(E_2)=\tfrac12\) ⇒ \(\ev{\hat H}=-\tfrac58\Ry\) constante</li>
+      </ul>
+    </div>
+    <div><canvas id="cvDens" class="fig" style="height:300px"></canvas><div class="cap">\(|\psi(\rv,t)|^2\) en el plano \(x\)–\(z\), animada.</div></div>
+  </div>
+  <aside class="n" data-t="9:10 – 10:05"><ol><li>Û(t) espectral: cada estado gana su fase; suma + integral.</li><li>Un autoestado no muestra dinámica: hace falta superponer.</li><li>1s + 2p₀: fase relativa con la frecuencia de Bohr.</li><li>Interferencia ∝ cos θ: la nube oscila en z (paridad opuesta).</li><li>P(E₁) = P(E₂) = ½; ⟨H⟩ constante.</li></ol></aside>
+</section>
+
+<!-- ============================== 13 ============================== -->
+<section class="slide" data-title="Momentum y Fourier">
+  <div class="eyebrow">Representación de momentum</div>
+  <h2>Momentum y transformada de Fourier</h2>
+  <div class="eq" style="font-size:22px">\[ \mel{\pv}{\hat V}{\pv'}=-\frac{\alpha}{2\pi^2\hbar}\frac{1}{|\pv-\pv'|^2}\ \Rightarrow\ \Big(\frac{p^2}{2\mu}-E\Big)\phi(\pv)=\frac{\alpha}{2\pi^2\hbar}\int\dd^3p'\,\frac{\phi(\pv')}{|\pv-\pv'|^2} \]</div>
+  <p class="small">Local en \(\rv\) ⇒ convolución (ecuación <b>integral</b>) en \(\pv\): el potencial transfiere momento.</p>
+  <div class="box">
+    <h3>Verificación con el estado 1s</h3>
+    <div class="eq" style="font-size:22px">\[ \phi_{1s}(\pv)=\frac{1}{(2\pi\hbar)^{3/2}}\frac{4\pi\hbar}{p}\int_0^\infty r\sin\Big(\frac{pr}{\hbar}\Big)\frac{\ee^{-r/\aB}}{\sqrt{\pi\aB^3}}\dd r=\frac{2\sqrt2}{\pi}\frac{p_0^{5/2}}{(p_0^2+p^2)^2},\quad p_0=\frac{\hbar}{\aB}=\frac{\mu\alpha}{\hbar} \]</div>
+  </div>
+  <p class="small muted">Parseval: \(\int|\phi_{1s}|^2\dd^3p=1\); \(\int p^2|\phi_{1s}|^2\dd^3p=\hbar^2/\aB^2\), igual que en posición.</p>
+  <aside class="n" data-t="10:05 – 10:50"><ol><li>En momentum, la cinética es fácil y el potencial difícil.</li><li>Transformada de 1/r: 1/|p − p′|².</li><li>Ecuación integral: el potencial transfiere momento.</li><li>Posición es la representación natural.</li><li>Fourier del 1s = solución en momentum; Parseval.</li></ol></aside>
+</section>
+
+<!-- ============================== 14 ============================== -->
+<section class="slide" data-title="Propagador">
+  <div class="eyebrow">Propagación</div>
+  <h2>Propagador e integral de caminos</h2>
+  <div class="eq" style="font-size:22px">\[ K(\rv_f,t;\rv_i,0)=\mel{\rv_f}{\hat U(t)}{\rv_i},\qquad \psi(\rv_f,t)=\int\dd^3r_i\,K\,\psi(\rv_i,0) \]</div>
+  <div class="eq" style="font-size:22px">\[ K=\sum_{n,l}\frac{2l+1}{4\pi}R_{nl}(r_f)R_{nl}(r_i)P_l(\cos\gamma)\,\ee^{-\ii E_nt/\hbar}+\text{(continuo)} \]</div>
+  <ul class="small">
+    <li>Exacto pero <b>no cerrado en \(t\)</b> (la partícula libre sí: una gaussiana)</li>
+    <li>\(K_{\rm tot}=\Big(\dfrac{M}{2\pi\ii\hbar t}\Big)^{3/2}\ee^{\ii M|\Rv_f-\Rv_i|^2/2\hbar t}\,K\): la separación reaparece</li>
+    <li>\(K=\int\mathcal D[\rv]\,\ee^{\ii S/\hbar}\), \(S=\int\big(\tfrac{\mu}{2}\dot\rv^2+\tfrac{\alpha}{r}\big)\dd t\): CM gaussiano; relativo no (Duru–Kleinert)</li>
+  </ul>
+  <aside class="n" data-t="10:50 – 11:30"><ol><li>K: amplitud de ir de un punto a otro en t.</li><li>Suma espectral: exacta pero no cerrada en t.</li><li>Partícula libre: sí cerrada (gaussiana).</li><li>Sistema completo: propagador libre de M por K.</li><li>Caminos: CM gaussiano; relativo no.</li></ol></aside>
+</section>
+
+<!-- ============================== 15 ============================== -->
+<section class="slide" data-title="Función de Green">
+  <div class="eyebrow">Resolvente</div>
+  <h2>Función de Green: polos y corte</h2>
+  <div class="eq" style="font-size:22px">\[ \hat G(E)=\frac{1}{E-\hat H+\ii0^+},\qquad G(\rv,\rv';E)=\sum_{nlm}\frac{\psi_{nlm}(\rv)\psi^*_{nlm}(\rv')}{E-E_n+\ii0^+}+\text{(continuo)} \]</div>
+  <p class="small" style="text-align:center">\(\hat H\ \leftrightarrow\ \hat U(t)\ \leftrightarrow\ K(t)\ \leftrightarrow\ G(E)\)</p>
+  <div class="eq" style="font-size:22px">\[ g_l(r,r';E)=-\frac{2\mu}{\hbar^2}\frac{\Gamma(l+1-\lambda)}{2\kappa\,\Gamma(2l+2)}M_{\lambda,l+\frac12}(2\kappa r_{\lt})\,W_{\lambda,l+\frac12}(2\kappa r_{\gt}) \]</div>
+  <div class="row c2 small">
+    <div class="box"><h3>Polos</h3>\(\Gamma(l+1-\lambda)\) diverge en \(\lambda=n\) ⇔ \(E=E_n\): los estados ligados. Misma condición que la diapositiva 9.</div>
+    <div class="box"><h3>Corte</h3>En \([0,\infty)\): el continuo. La partícula libre solo tiene corte. Forma global: Hostler (1964).</div>
+  </div>
+  <aside class="n" data-t="11:30 – 12:10"><ol><li>G: el propagador en energía (transformada de Fourier).</li><li>Denominador E − Eₙ: niveles = polos.</li><li>Continuo = corte; partícula libre solo corte.</li><li>Forma cerrada con las dos soluciones de Whittaker.</li><li>Polos de Γ en λ = n: la misma cuantización.</li></ol></aside>
+</section>
+
+<!-- ============================== 16 ============================== -->
+<section class="slide" data-title="Valores esperados">
+  <div class="eyebrow">Observables</div>
+  <h2>Valores esperados, incertidumbre y Hellmann–Feynman</h2>
+  <div class="eq" style="font-size:22px">\[ \ev{r}=\tfrac{\aB}{2}[3n^2-l(l+1)],\quad \ev{1/r}=\frac{1}{n^2\aB},\quad \ev{p^2}=\frac{\hbar^2}{n^2\aB^2},\quad \ev{\pv}=0 \]</div>
+  <div class="row c2">
+    <div class="box small"><h3>Estado 1s</h3>
+      \(\Delta x=\aB,\ \ \Delta p_x=\dfrac{\hbar}{\sqrt3\,\aB}\)
+      <div class="eq" style="font-size:22px">\[ \Delta x\,\Delta p_x=\frac{\hbar}{\sqrt3}\approx0.577\,\hbar>\frac\hbar2 \]</div>
+      No depende de \(\mu\). <b>Virial:</b> \(\ev{T}=-E_n\), \(\ev{V}=2E_n\)</div>
+    <div class="small">
+      <p><b>Hellmann–Feynman:</b> \(\partial_\lambda E_n=\ev{\partial_\lambda\hat H}\)</p>
+      <ul style="margin-top:8px">
+        <li>\(\lambda=\alpha\): \(\ev{1/r}=1/(n^2\aB)\) sin integrar</li>
+        <li>\(\lambda=\mu\): \(\partial_\mu\hat H=-\hat T/\mu\) ⇒ \(\ev{T}=-E_n\)</li>
+      </ul>
+      <p class="muted" style="margin-top:10px">Incertidumbre por par canónico \((x,p_x)\); \(r\) y \(|\pv|\) no lo son.</p>
+    </div>
+  </div>
+  <aside class="n" data-t="12:10 – 12:55"><ol><li>⟨r⟩ ∝ n²; ⟨p⟩ = 0 (Ehrenfest en estado estacionario).</li><li>1s: ΔxΔpₓ = ħ/√3 &gt; ħ/2, por pares canónicos.</li><li>El producto no depende de μ (a_μ se cancela).</li><li>Virial: ⟨T⟩ = −Eₙ, ⟨V⟩ = 2Eₙ.</li><li>Hellmann–Feynman: derivar respecto a α o μ.</li></ol></aside>
+</section>
+
+<!-- ============================== 17 ============================== -->
+<section class="slide" data-title="Dinámica de la superposición">
+  <div class="eyebrow">Ehrenfest · Robertson–Schrödinger</div>
+  <h2>Dinámica de la superposición</h2>
+  <div class="row c46" style="flex:1">
+    <ul class="small">
+      <li>\(\ev{z}=z_{12}\cos\omega_{21}t\), \(z_{12}=\tfrac{128\sqrt2}{243}\aB\approx0.745\,\aB\)</li>
+      <li>\(\ev{p_z}=-\tfrac{16\sqrt2}{81}\tfrac{\hbar}{\aB}\sin\omega_{21}t\)</li>
+      <li>Ehrenfest: \(\mu\tfrac{\dd}{\dd t}\ev{z}=\ev{p_z}\) <span class="ok">✓</span></li>
+      <li>\(\mu\omega_{21}^2z_{12}=\alpha\mel{1s}{\tfrac{z}{r^3}}{2p_0}=\tfrac{2\sqrt2}{27}\tfrac{\alpha}{\aB^2}\) <span class="ok">✓</span></li>
+      <li>\(\Delta z\Delta p_z\in[1.25,1.47]\,\hbar\) &gt; cota R–S \(\le0.51\,\hbar\)</li>
+      <li>\(\ev{\rv/r^3}\neq\ev{\rv}/|\ev{\rv}|^3\): no es una órbita de Kepler; límite clásico para \(n\gg1\)</li>
+    </ul>
+    <div><canvas id="cvSup" class="fig" style="height:400px"></canvas><div class="cap">Arriba: \(\ev{z}/\aB\) y \(10\ev{p_z}\aB/\hbar\) (×10 solo de escala). Abajo: \(\Delta z\Delta p_z\), cota R–S y \(\hbar/2\).</div></div>
+  </div>
+  <aside class="n" data-t="12:55 – 13:40"><ol><li>⟨z⟩ oscila con ω₂₁, amplitud 0.745 a_μ.</li><li>⟨p_z⟩ desfasado 90°.</li><li>Ehrenfest se cumple exactamente.</li><li>No es Kepler: la fuerza no es lineal.</li><li>ΔzΔp_z siempre sobre la cota R–S (el 2p₀ es muy extendido).</li></ol></aside>
+</section>
+
+<!-- ============================== 18 ============================== -->
+<section class="slide" data-title="Aproximaciones">
+  <div class="eyebrow">Métodos aproximados</div>
+  <h2>Aproximaciones: contraste con lo exacto</h2>
+  <ul class="small">
+    <li><b>WKB + Langer</b> (\(l(l+1)\to(l+\frac12)^2\); parámetro \(1/n\)):
+      <div class="eq" style="font-size:21px">\[ \int_{r_1}^{r_2}\!\sqrt{2\mu\Big(E+\frac{\alpha}{r}-\frac{\hbar^2(l+\frac12)^2}{2\mu r^2}\Big)}\,\dd r=\pi\hbar(n_r+\tfrac12)\ \Rightarrow\ E=-\frac{\Ry}{(n_r+l+1)^2} \]</div></li>
+    <li><b>Variacional</b> gaussiano: \(E_{\rm var}=-\tfrac{8}{3\pi}\Ry\approx-0.849\,\Ry\ge E_1\) (15 % arriba)</li>
+    <li><b>Relativista cinética</b> (parámetro \(\alpha_{\rm f}^2\)): rompe la degeneración en \(l\)
+      <div class="eq" style="font-size:21px">\[ E^{(1)}_{nl}=-\frac{\mu^2E_n^2}{2c^2}\Big(\frac{1}{m_1^3}+\frac{1}{m_2^3}\Big)\Big[\frac{4n}{l+\frac12}-3\Big] \]</div></li>
+  </ul>
+  <p class="small muted" style="margin-top:auto">Depende de \(m_1\) y \(m_2\) por separado: más allá del orden no relativista, \(\mu\) deja de bastar.</p>
+  <aside class="n" data-t="13:40 – 14:20"><ol><li>Las aproximaciones sirven para contrastar con lo exacto.</li><li>WKB con Langer: exacto (coincidencia de 1/r).</li><li>Variacional gaussiano: 15 % arriba (sin pico en el origen).</li><li>Relativista: rompe la degeneración en l.</li><li>Depende de m₁ y m₂ por separado.</li></ol></aside>
+</section>
+
+<!-- ============================== 19 ============================== -->
+<section class="slide" data-title="Propuesta computacional">
+  <div class="eyebrow">Propuesta numérica</div>
+  <h2>Propuesta computacional: diferencias finitas</h2>
+  <div class="row c2">
+    <ol class="small" style="margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:8px">
+      <li>Unidades atómicas \(\hbar=m_e=\alpha=1\); \(\mu\) como parámetro</li>
+      <li>Malla \(r_j=jh\), \(h=R_{\max}/(N+1)\)</li>
+      <li>\(u(0)=0\) (física), \(u(R_{\max})=0\) (caja)</li>
+      <li>\(u''\approx(u_{j+1}-2u_j+u_{j-1})/h^2\), error \(O(h^2)\)</li>
+      <li>Matriz tridiagonal simétrica → autovalores y vectores</li>
+      <li>Convergencia en \(h\) y en \(R_{\max}\gtrsim6n^2\aB\)</li>
+    </ol>
+    <div class="box small"><h3>Validación</h3>
+      <ul><li>\(E_n=-\mu/2n^2\)</li><li>\(u_{nl}\) analíticas (nodos)</li><li>Universalidad \(E_n/\Ry\) en \(\mu\)</li><li>\(z_{12}\) con autovectores numéricos</li></ul>
+      <p class="muted" style="margin-top:8px">Código en Python (numpy + scipy) y también en esta presentación, en vivo.</p></div>
+  </div>
+  <aside class="n" data-t="14:20 – 14:50"><ol><li>Diferencias finitas sobre la ecuación radial.</li><li>μ como parámetro: un código para cualquier par de masas.</li><li>Segunda derivada → diferencia entre vecinos → matriz tridiagonal.</li><li>Valores propios = energías; vectores = funciones.</li><li>u(0) = 0 físico; pared lejana artificial.</li></ol></aside>
+</section>
+
+<!-- ============================== 20 ============================== -->
+<section class="slide" data-title="Resultados numéricos">
+  <div class="eyebrow">Resultados</div>
+  <h2>Resultados numéricos: universalidad en \(\mu\)</h2>
+  <div class="row c2" style="flex:1">
+    <div>
+      <table class="t" style="font-size:19px">
+        <thead><tr><th>n</th><th>H (eV)</th><th>Ps (eV)</th><th>H<sub>μ</sub> (eV)</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td class="n">−13.598</td><td class="n">−6.803</td><td class="n">−2528.4</td></tr>
+          <tr><td>2</td><td class="n">−3.3995</td><td class="n">−1.7007</td><td class="n">−632.12</td></tr>
+          <tr><td>3</td><td class="n">−1.5109</td><td class="n">−0.7559</td><td class="n">−280.94</td></tr>
+        </tbody>
+      </table>
+      <p class="small" style="margin-top:12px">\(E_n/\Ry=-0.99996,\,-0.25000,\,-0.11111\) <b>en los tres</b></p>
+      <p class="small">Error relativo \(10^{-5}\)–\(10^{-6}\) · \(z_{12}^{\rm num}=0.74498\,\aB\) vs \(0.74494\,\aB\)</p>
+    </div>
+    <div><canvas id="cvConvS" class="fig" style="height:360px"></canvas><div class="cap" id="capConv">Error de \(E_1\) frente al paso \(h\) (log–log), calculado en vivo.</div></div>
+  </div>
+  <aside class="n" data-t="14:50 – 15:25"><ol><li>Energías muy distintas; divididas por Ry_μ, idénticas.</li><li>Comprobación numérica de la reducción exacta.</li><li>Error ≲ 10⁻⁵; z₁₂ numérico reproducido.</li><li>Error ∝ h² (pendiente 2).</li><li>Puente: “preparé una simulación interactiva”.</li></ol></aside>
+</section>
+
+<!-- ============================== 21 DEMO A ============================== -->
+<section class="slide demo" data-title="Simulación · centro de masa">
+  <div class="eyebrow">Simulación en vivo · 1 de 2</div>
+  <h2>Reducción al centro de masa</h2>
+  <div class="row" style="grid-template-columns:350px minmax(0,1fr);gap:20px;flex:1">
+    <div style="display:flex;flex-direction:column;gap:9px;min-width:0">
+      <div class="ctrls" id="presets" role="group" aria-label="Sistemas"></div>
+      <div class="sl"><label for="m1"><span style="color:var(--p1)">●</span> m₁/mₑ</label><input id="m1" type="range" min="0" max="4" step="0.001"><output id="m1o"></output></div>
+      <div class="sl"><label for="m2"><span style="color:var(--p2)">●</span> m₂/mₑ</label><input id="m2" type="range" min="0" max="4" step="0.001"><output id="m2o"></output></div>
+      <div class="ro" id="ro"></div>
+      <div class="ctrls" id="stateSeg" role="group" aria-label="Estado">
+        <button data-s="1s">1s</button><button data-s="2p">2p₀</button><button data-s="sup" aria-pressed="true">1s + 2p₀</button>
+        <button class="btn primary" id="play">Pausar</button>
+      </div>
+      <div class="kv" id="cmKv"></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px;min-width:0">
+      <div class="row c2" style="gap:12px">
+        <div><canvas id="cvRel" class="fig" style="height:300px"></canvas><div class="cap">Relativa \(\rv=\rv_1-\rv_2\): igual para todo sistema.</div></div>
+        <div><canvas id="cvLab" class="fig" style="height:300px"></canvas><div class="cap">Cada partícula alrededor del CM (+).</div></div>
+      </div>
+      <canvas id="cvZ" class="fig" style="height:150px"></canvas>
+    </div>
+  </div>
+  <aside class="n" data-t="15:25 – 16:05"><ol><li>H → Ps: μ a la mitad, energía a la mitad, tamaño al doble.</li><li>Reproducir: izquierda igual para todo sistema; derecha cada partícula.</li><li>Ps: nubes iguales y opuestas.</li><li>H: el protón casi no se mueve; m₁⟨z₁⟩ + m₂⟨z₂⟩ = 0.</li><li>Momentos iguales y opuestos (P = 0).</li></ol></aside>
+</section>
+
+<!-- ============================== 22 DEMO B ============================== -->
+<section class="slide demo" data-title="Simulación · solver">
+  <div class="eyebrow">Simulación en vivo · 2 de 2</div>
+  <h2>Solver de la ecuación radial en vivo</h2>
+  <div class="row" style="grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:20px;flex:1">
+    <div style="display:flex;flex-direction:column;gap:9px;min-width:0">
+      <div class="ctrls">
+        <label class="xs muted" for="ell">l</label>
+        <select id="ell"><option value="0">0 (s)</option><option value="1">1 (p)</option><option value="2">2 (d)</option></select>
+        <span class="kv" id="svKv"></span>
+      </div>
+      <div class="sl"><label for="nN">N</label><input id="nN" type="range" min="200" max="6000" step="100" value="3000"><output id="nNo">3000</output></div>
+      <div class="sl"><label for="rM">R<sub>max</sub>/a<sub>μ</sub></label><input id="rM" type="range" min="10" max="200" step="5" value="150"><output id="rMo">150</output></div>
+      <table class="sv" aria-label="Autovalores">
+        <thead><tr><th>estado</th><th>E num.</th><th>E exacta</th><th>error</th></tr></thead>
+        <tbody id="svBody"></tbody>
+      </table>
+      <div class="ctrls"><button class="btn primary" id="runConv">Calcular convergencia</button><span class="kv" id="convOut"></span></div>
+      <p class="xs muted">Energías en eV para el sistema elegido en la diapositiva anterior. Clic en una fila para graficarla. Con R<sub>max</sub> ≈ 15 aparecen estados de caja.</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:8px;min-width:0">
+      <canvas id="cvU" class="fig" style="height:300px"></canvas>
+      <canvas id="cvConv" class="fig" style="height:180px"></canvas>
+    </div>
+  </div>
+  <aside class="n" data-t="16:05 – 16:40"><ol><li>Solver en vivo: diagonaliza la matriz tridiagonal en el navegador.</li><li>Tabla: numérico vs exacto, en eV del sistema elegido.</li><li>Bajar R_max a 15: estados de caja (la pared aprieta).</li><li>Calcular convergencia: pendiente ≈ 2.</li><li>“Con esto vuelvo a la presentación para cerrar”.</li></ol></aside>
+</section>
+
+<!-- ============================== 23 ============================== -->
+<section class="slide" data-title="Interpretación">
+  <div class="eyebrow">Interpretación física</div>
+  <h2>El papel de \(\mu\)</h2>
+  <div class="eq">\[ \aB=\frac{\hbar^2}{\mu\alpha}\propto\frac1\mu,\qquad \Ry=\frac{\mu\alpha^2}{2\hbar^2}\propto\mu,\qquad |\psi_{n00}(0)|^2=\frac{1}{\pi n^3\aB^3}\propto\mu^3 \]</div>
+  <div class="row c64">
+    <table class="t">
+      <thead><tr><th>Sistema</th><th>μ / mₑ</th><th>E₁</th><th>a<sub>μ</sub></th></tr></thead>
+      <tbody>
+        <tr><td>Hidrógeno</td><td class="n">0.99946</td><td class="n">−13.598 eV</td><td class="n">0.529 Å</td></tr>
+        <tr><td>Positronio</td><td class="n">0.5</td><td class="n">−6.803 eV</td><td class="n">1.058 Å</td></tr>
+        <tr><td>H muónico</td><td class="n">185.84</td><td class="n">−2.53 keV</td><td class="n">285 fm</td></tr>
+      </tbody>
+    </table>
+    <ul class="small">
+      <li>H vs D: \(\mu_D/\mu_H\approx1+2.7\times10^{-4}\) ⇒ corrimiento isotópico (Urey, 1932)</li>
+      <li>Muónico: \(|\psi(0)|^2\) unas \(6\times10^6\) veces mayor ⇒ sensible al radio del protón</li>
+    </ul>
+  </div>
+  <aside class="n" data-t="16:40 – 17:20"><ol><li>Tamaño ∝ 1/μ, energía ∝ μ.</li><li>Positronio: mitad de energía, doble tamaño.</li><li>Muónico: keV y femtómetros.</li><li>H vs D: corrimiento isotópico, descubrimiento del deuterio.</li><li>|ψ(0)|² ∝ μ³: radio del protón.</li></ol></aside>
+</section>
+
+<!-- ============================== 24 ============================== -->
+<section class="slide" data-title="Conclusiones">
+  <div class="eyebrow">Conclusiones</div>
+  <h2>Qué aporta frente a la partícula libre</h2>
+  <ol class="small" style="margin:0;padding-left:1.3em;display:flex;flex-direction:column;gap:10px">
+    <li>Reducción <b>exacta</b>: dos cuerpos = CM libre (\(M\)) + problema interno (\(\mu\))</li>
+    <li>Ligadura: espectro mixto, discreto infinito (\(E\lt0\)) + continuo (\(E\ge0\))</li>
+    <li>Cuantización por condiciones de frontera = corte de la serie hipergeométrica</li>
+    <li>Estructura nodal y degeneración \(n^2\)</li>
+    <li>Escalas \(\aB\), \(\Ry\) dependientes de \(\mu\), medibles en espectroscopía</li>
+    <li>Resolvente con polos y corte; propagador cerrado en \(E\), no en \(t\)</li>
+    <li>Asimetría de representaciones: local en \(\rv\), integral en \(\pv\)</li>
+  </ol>
+  <p style="margin-top:auto;font:600 34px var(--font-display);color:var(--accent)">Gracias</p>
+  <aside class="n" data-t="17:20 – 17:50"><ol><li>Reducción exacta: CM libre + problema interno con μ.</li><li>Ligadura: discreto infinito + continuo.</li><li>Cuantización por condiciones de frontera.</li><li>Nodos y degeneración n².</li><li>Escalas dependientes de μ; Green con polos; posición vs momentum.</li></ol></aside>
+</section>
+
+</div>
+</div>
+
+<div class="notes" id="notes" hidden><h4 id="notesT"></h4><div id="notesB"></div></div>
+<nav class="bar" aria-label="Controles de la presentación">
+  <div class="prog" id="prog"></div>
+  <button id="prev" aria-label="Diapositiva anterior">←</button>
+  <span class="count" id="count">1 / 24</span>
+  <button id="next" aria-label="Diapositiva siguiente">→</button>
+  <span class="ttl" id="ttl"></span>
+  <span class="hint">← → navegar · N notas · F pantalla completa</span>
+  <button id="btnNotes" aria-pressed="false">Notas</button>
+  <button id="btnFs">Pantalla completa</button>
+</nav>
+
+<script>
+(() => {
+"use strict";
+const $ = id => document.getElementById(id);
+const slides = [...document.querySelectorAll(".slide")];
+let cur = 0, scale = 1;
+
+// ---------------------------------------------------------------- tema
+let T = {};
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+function readTheme(){ T={bg:css("--slide"),ink:css("--ink"),muted:css("--muted"),line:css("--line"),accent:css("--accent"),soft:css("--accent-soft"),p1:css("--p1"),p2:css("--p2"),good:css("--good"),ui:css("--font-ui"),data:css("--font-data")}; }
+function rgb(h){ h=h.replace("#",""); if(h.length===3) h=h.split("").map(c=>c+c).join(""); const n=parseInt(h,16); return [(n>>16)&255,(n>>8)&255,n&255]; }
+
+// ---------------------------------------------------------------- escala del escenario
+function fit(){ const vp=$("vp"), w=vp.clientWidth-8, h=vp.clientHeight-8; scale=Math.min(w/1280,h/720); $("stage").style.transform=`scale(${scale})`; }
+function setup(cv){ const dpr=Math.min(3,(window.devicePixelRatio||1)*Math.max(scale,0.5)), W=cv.clientWidth, H=cv.clientHeight;
+  const tw=Math.round(W*dpr), th=Math.round(H*dpr); if(cv.width!==tw||cv.height!==th){ cv.width=tw; cv.height=th; }
+  const ctx=cv.getContext("2d"); ctx.setTransform(dpr,0,0,dpr,0,0); ctx.clearRect(0,0,W,H); return {ctx,W,H}; }
+
+// ---------------------------------------------------------------- formato y constantes
+const A0_M=5.29177210903e-11, RY_EV=13.605693122994, H_EVS=4.135667696e-15, HC=1239.84198;
+const MP=1836.15267343, MD=3670.48296788, MMU=206.7682830;
+const Z12=128*Math.SQRT2/243, PZ12=16*Math.SQRT2/81;
+function sig(x,p){ if(x===0) return "0"; const s=Number(x.toPrecision(p)); return Math.abs(s)>=1e5||Math.abs(s)<1e-3? s.toExponential(p-1): String(s); }
+function fmtLen(m){ for(const [s,v] of [["nm",1e-9],["Å",1e-10],["pm",1e-12],["fm",1e-15]]) if(Math.abs(m)>=0.999*v||s==="fm") return sig(m/v,4)+" "+s; }
+function fmtE(ev){ const a=Math.abs(ev); return a>=1e3? sig(ev/1e3,5)+" keV": a>=1? sig(ev,5)+" eV": sig(ev*1e3,4)+" meV"; }
+function sup(n){ const d="⁰¹²³⁴⁵⁶⁷⁸⁹"; return (n<0?"⁻":"")+String(Math.abs(n)).split("").map(c=>d[+c]).join(""); }
+function mfmt(m){ return m>=100? m.toFixed(1): m>=10? m.toFixed(2): m.toFixed(3); }
+
+// ---------------------------------------------------------------- física
+const ISP=1/Math.sqrt(Math.PI), C2P=1/Math.sqrt(32*Math.PI);
+function rhoRel(x,z,state,phase){ const r=Math.hypot(x,z), a=ISP*Math.exp(-r), b=C2P*z*Math.exp(-r/2);
+  if(state==="1s") return a*a; if(state==="2p") return b*b; return 0.5*(a*a+b*b+2*a*b*Math.cos(phase)); }
+function laguerre(k,al,x){ if(k===0) return 1; let L0=1,L1=1+al-x; for(let j=1;j<k;j++){ const L2=((2*j+1+al-x)*L1-(j+al)*L0)/(j+1); L0=L1; L1=L2; } return L1; }
+function fact(n){ let f=1; for(let i=2;i<=n;i++) f*=i; return f; }
+function uExact(n,l,r){ const rho=2*r/n, N=Math.sqrt(Math.pow(2/n,3)*fact(n-l-1)/(2*n*fact(n+l))); return r*N*Math.exp(-rho/2)*Math.pow(rho,l)*laguerre(n-l-1,2*l+1,rho); }
+function buildDiag(N,Rmax,l){ const h=Rmax/(N+1), d=new Float64Array(N), r=new Float64Array(N);
+  for(let j=0;j<N;j++){ r[j]=h*(j+1); d[j]=1/(h*h)+l*(l+1)/(2*r[j]*r[j])-1/r[j]; } return {h,d,r,e:-1/(2*h*h)}; }
+function countBelow(d,e2,x){ let c=0,q=1; for(let i=0;i<d.length;i++){ q=d[i]-x-(i?e2/q:0); if(q===0) q=-1e-300; if(q<0) c++; } return c; }
+function eigK(d,e,k){ const e2=e*e; let lo=-2,hi=0; for(let i=0;i<d.length;i++) hi=Math.max(hi,d[i]+2*Math.abs(e));
+  for(let it=0;it<64;it++){ const m=0.5*(lo+hi); if(countBelow(d,e2,m)>k) hi=m; else lo=m; } return 0.5*(lo+hi); }
+function eigvec(d,e,lam){ const N=d.length, s=lam+1e-10*(1+Math.abs(lam)); let x=new Float64Array(N).fill(1); const cp=new Float64Array(N), dp=new Float64Array(N);
+  for(let it=0;it<3;it++){ let b0=d[0]-s; cp[0]=e/b0; dp[0]=x[0]/b0;
+    for(let i=1;i<N;i++){ const m=d[i]-s-e*cp[i-1]; cp[i]=e/m; dp[i]=(x[i]-e*dp[i-1])/m; }
+    const y=new Float64Array(N); y[N-1]=dp[N-1]; for(let i=N-2;i>=0;i--) y[i]=dp[i]-cp[i]*y[i+1];
+    let nr=0; for(let i=0;i<N;i++) nr+=y[i]*y[i]; nr=Math.sqrt(nr); for(let i=0;i<N;i++) y[i]/=nr; x=y; } return x; }
+function convData(){ const Ns=[250,500,1000,2000,4000,8000], pts=[]; for(const N of Ns){ const {h,d,e}=buildDiag(N,60,0); pts.push({h,err:Math.abs(eigK(d,e,0)+0.5)/0.5}); }
+  const X=pts.map(p=>Math.log10(p.h)), Y=pts.map(p=>Math.log10(p.err)), n=X.length, mx=X.reduce((a,b)=>a+b)/n, my=Y.reduce((a,b)=>a+b)/n;
+  let sxy=0,sxx=0; for(let i=0;i<n;i++){ sxy+=(X[i]-mx)*(Y[i]-my); sxx+=(X[i]-mx)**2; } return {pts,slope:sxy/sxx,b:my-sxy/sxx*mx}; }
+
+// ---------------------------------------------------------------- dibujos estáticos
+function potential(cv,opts={}){
+  const {ctx,W,H}=setup(cv); const L=opts.compact?6:14, padL=opts.compact?10:74, padB=opts.compact?10:38, padT=12, padR=opts.compact?10:52;
+  const xmax=30, ymin=-0.6, ymax=0.15, tx=x=>padL+(W-padL-padR)*x/xmax, ty=y=>padT+(H-padT-padB)*(ymax-y)/(ymax-ymin);
+  ctx.fillStyle=T.soft; ctx.fillRect(tx(0),ty(ymax),tx(xmax)-tx(0),ty(0)-ty(ymax));
+  if(!opts.compact){ ctx.fillStyle=T.muted; ctx.font=`14px ${T.ui}`; ctx.fillText("continuo E > 0",tx(15),ty(0.07)); }
+  ctx.strokeStyle=T.ink; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(tx(0),ty(0)); ctx.lineTo(tx(xmax),ty(0)); ctx.stroke();
+  for(let n=1;n<=6;n++){ const y=-0.5/(n*n); ctx.strokeStyle=T.muted; ctx.setLineDash([3,4]); ctx.beginPath(); ctx.moveTo(tx(0),ty(y)); ctx.lineTo(tx(xmax),ty(y)); ctx.stroke(); ctx.setLineDash([]);
+    if(!opts.compact&&n<=3){ ctx.fillStyle=T.muted; ctx.font=`13px ${T.data}`; ctx.fillText("n="+n,tx(xmax)+6,ty(y)+4); } }
+  [T.accent,T.p2,T.good].forEach((c,l)=>{ ctx.strokeStyle=c; ctx.lineWidth=opts.compact?3:2.4; ctx.beginPath(); let first=true;
+    for(let i=0;i<=600;i++){ const x=0.05+(xmax-0.05)*i/600, y=-1/x+l*(l+1)/(2*x*x); if(y<ymin-0.2||y>ymax+0.2){ first=true; continue; } const Y=Math.max(ty(ymax),Math.min(ty(ymin),ty(y))); first?ctx.moveTo(tx(x),Y):ctx.lineTo(tx(x),Y); first=false; } ctx.stroke();
+    if(!opts.compact){ ctx.fillStyle=c; ctx.fillRect(W-padR-84,H-padB-64+l*20,16,3); ctx.fillStyle=T.ink; ctx.font=`14px ${T.ui}`; ctx.fillText("l = "+l,W-padR-62,H-padB-59+l*20); } });
+  if(!opts.compact){ ctx.fillStyle=T.muted; ctx.font=`13px ${T.data}`; ctx.textAlign="center"; [0,10,20,30].forEach(x=>ctx.fillText(x,tx(x),H-padB+18));
+    ctx.fillText("r / a_μ",tx(xmax/2),H-6); ctx.textAlign="right"; [-0.5,-0.25,0].forEach(y=>ctx.fillText(y.toFixed(2),padL-8,ty(y)+4));
+    ctx.save(); ctx.translate(12,ty(-0.25)); ctx.rotate(-Math.PI/2); ctx.textAlign="center"; ctx.fillText("E / 2Ry_μ",0,0); ctx.restore(); ctx.textAlign="left"; }
+}
+let WF=null;
+function wavefunctions(cv){
+  if(!WF){ WF=[]; for(const [n,l] of [[1,0],[2,0],[2,1],[3,0]]){ const {d,e,r,h}=buildDiag(1500,40,l); const lam=eigK(d,e,n-l-1); let u=eigvec(d,e,lam); const s=1/Math.sqrt(h);
+    let dot=0; const ue=new Float64Array(r.length); for(let i=0;i<r.length;i++){ ue[i]=uExact(n,l,r[i]); u[i]*=s; dot+=u[i]*ue[i]; } if(dot<0) for(let i=0;i<u.length;i++) u[i]=-u[i]; WF.push({n,l,r,u,ue}); } }
+  const {ctx,W,H}=setup(cv), padL=52,padR=14,padT=14,padB=34, xmax=25, ymin=-0.5, ymax=0.8;
+  const tx=x=>padL+(W-padL-padR)*x/xmax, ty=y=>padT+(H-padT-padB)*(ymax-y)/(ymax-ymin);
+  ctx.strokeStyle=T.line; ctx.beginPath(); ctx.moveTo(padL,ty(0)); ctx.lineTo(W-padR,ty(0)); ctx.stroke();
+  const cols=[T.accent,T.p2,T.good,T.p1], names=["1s","2s","2p","3s"];
+  WF.forEach((w,k)=>{ ctx.strokeStyle=cols[k]; ctx.lineWidth=2.2; ctx.beginPath(); let f=true;
+    for(let i=0;i<w.r.length&&w.r[i]<=xmax;i+=4){ const X=tx(w.r[i]),Y=ty(w.ue[i]); f?ctx.moveTo(X,Y):ctx.lineTo(X,Y); f=false; } ctx.stroke();
+    ctx.fillStyle=cols[k]; for(let i=20;i<w.r.length&&w.r[i]<=xmax;i+=40){ ctx.beginPath(); ctx.arc(tx(w.r[i]),ty(w.u[i]),3,0,7); ctx.fill(); }
+    ctx.fillRect(W-padR-150+(k%2)*76,padT+6+Math.floor(k/2)*20,16,3); ctx.fillStyle=T.ink; ctx.font=`14px ${T.data}`; ctx.fillText(names[k],W-padR-128+(k%2)*76,padT+11+Math.floor(k/2)*20); });
+  ctx.fillStyle=T.muted; ctx.font=`13px ${T.data}`; ctx.textAlign="center"; [0,5,10,15,20,25].forEach(x=>ctx.fillText(x,tx(x),H-padB+18)); ctx.fillText("r / a_μ",tx(12.5),H-4);
+  ctx.textAlign="right"; [-0.4,0,0.4,0.8].forEach(y=>ctx.fillText(y.toFixed(1),padL-8,ty(y)+4)); ctx.textAlign="left";
+}
+let CONV=null;
+function convPlot(cv,compact){
+  if(!CONV) CONV=convData(); const {ctx,W,H}=setup(cv), padL=compact?54:66,padR=16,padT=16,padB=compact?30:38;
+  const xs=CONV.pts.map(p=>Math.log10(p.h)), ys=CONV.pts.map(p=>Math.log10(p.err));
+  const x0=Math.min(...xs)-0.15, x1=Math.max(...xs)+0.15, y0=Math.floor(Math.min(...ys))-0.2, y1=Math.ceil(Math.max(...ys))+0.2;
+  const tx=x=>padL+(W-padL-padR)*(x-x0)/(x1-x0), ty=y=>padT+(H-padT-padB)*(y1-y)/(y1-y0);
+  ctx.font=`${compact?12:13}px ${T.data}`; ctx.strokeStyle=T.line; ctx.fillStyle=T.muted;
+  for(let y=Math.ceil(y0);y<=Math.floor(y1);y++){ ctx.beginPath(); ctx.moveTo(padL,ty(y)); ctx.lineTo(W-padR,ty(y)); ctx.stroke(); ctx.textAlign="right"; ctx.fillText("10"+sup(y),padL-6,ty(y)+4); }
+  for(let x=Math.ceil(x0);x<=Math.floor(x1);x++){ ctx.textAlign="center"; ctx.fillText("10"+sup(x),tx(x),H-padB+16); }
+  ctx.textAlign="left"; ctx.fillText("paso h / a_μ",W-padR-96,H-4);
+  ctx.strokeStyle=T.muted; ctx.setLineDash([5,5]); ctx.beginPath(); ctx.moveTo(tx(x0),ty(CONV.b+CONV.slope*x0)); ctx.lineTo(tx(x1),ty(CONV.b+CONV.slope*x1)); ctx.stroke(); ctx.setLineDash([]);
+  ctx.strokeStyle=T.accent; ctx.lineWidth=2.2; ctx.beginPath(); xs.forEach((x,i)=>i?ctx.lineTo(tx(x),ty(ys[i])):ctx.moveTo(tx(x),ty(ys[i]))); ctx.stroke();
+  ctx.fillStyle=T.accent; xs.forEach((x,i)=>{ ctx.beginPath(); ctx.arc(tx(x),ty(ys[i]),4.5,0,7); ctx.fill(); });
+  ctx.fillStyle=T.ink; ctx.fillText(`pendiente ajustada: ${CONV.slope.toFixed(3)} (esperada 2)`,padL+10,padT+14);
+}
+
+// ---------------------------------------------------------------- densidades
+const GRID=130; const off=document.createElement("canvas"); off.width=GRID; off.height=GRID;
+function density(cv,extent,layers){
+  const {ctx,W,H}=setup(cv), img=off.getContext("2d").createImageData(GRID,GRID), bg=rgb(T.bg);
+  const vals=layers.map(()=>new Float32Array(GRID*GRID)), mx=layers.map(()=>1e-300);
+  for(let j=0;j<GRID;j++){ const z=extent*(1-2*(j+0.5)/GRID); for(let i=0;i<GRID;i++){ const x=extent*(2*(i+0.5)/GRID-1);
+    layers.forEach((L,k)=>{ const v=L.fn(x,z); vals[k][j*GRID+i]=v; if(v>mx[k]) mx[k]=v; }); } }
+  const cols=layers.map(L=>rgb(L.color));
+  for(let p=0;p<GRID*GRID;p++){ let r=bg[0],g=bg[1],b=bg[2];
+    layers.forEach((L,k)=>{ const a=Math.min(1,Math.sqrt(vals[k][p]/mx[k]))*0.92; r=r*(1-a)+cols[k][0]*a; g=g*(1-a)+cols[k][1]*a; b=b*(1-a)+cols[k][2]*a; });
+    img.data[4*p]=r; img.data[4*p+1]=g; img.data[4*p+2]=b; img.data[4*p+3]=255; }
+  off.getContext("2d").putImageData(img,0,0); ctx.imageSmoothingEnabled=true; ctx.drawImage(off,0,0,W,H);
+  ctx.strokeStyle=T.line; ctx.setLineDash([3,4]); ctx.beginPath(); ctx.moveTo(W/2,0); ctx.lineTo(W/2,H); ctx.moveTo(0,H/2); ctx.lineTo(W,H/2); ctx.stroke(); ctx.setLineDash([]);
+  ctx.fillStyle=T.muted; ctx.font=`13px ${T.ui}`; ctx.fillText("z",W/2+6,15); ctx.fillText("x",W-14,H/2-6);
+  return {ctx,W,H};
+}
+function scaleBar(ctx,W,H,extent,label){ const ppu=W/(2*extent); let L=1; while(L*ppu>W*0.32) L/=2; while(L*ppu<W*0.12) L*=2;
+  ctx.strokeStyle=T.ink; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(10,H-12); ctx.lineTo(10+L*ppu,H-12); ctx.stroke(); ctx.fillStyle=T.ink; ctx.font=`12px ${T.data}`; ctx.fillText(label(L),10,H-18); }
+
+// ---------------------------------------------------------------- estado de la simulación
+const S={m1:1,m2:MP,preset:"H",state:"sup",tau:0,playing:true,sel:0};
+const PRESETS=[["H","Hidrógeno",1,MP],["D","Deuterio",1,MD],["Ps","Positronio",1,1],["Mu","Muonio",1,MMU],["Hmu","H muónico",MMU,MP]];
+function derived(){ const M=S.m1+S.m2, mu=S.m1*S.m2/M; return {M,mu,a:A0_M/mu,Ry:RY_EV*mu,f1:S.m2/M,f2:S.m1/M,T21:H_EVS/(0.75*RY_EV*mu)}; }
+PRESETS.forEach(([k,name,m1,m2])=>{ const b=document.createElement("button"); b.type="button"; b.textContent=name; b.dataset.k=k;
+  b.addEventListener("click",()=>{ Object.assign(S,{m1,m2,preset:k}); syncSliders(); refreshSystem(); }); $("presets").appendChild(b); });
+function syncSliders(){ $("m1").value=Math.log10(S.m1); $("m2").value=Math.log10(S.m2); }
+["m1","m2"].forEach(id=>$(id).addEventListener("input",e=>{ S[id]=Math.pow(10,+e.target.value); S.preset="custom"; refreshSystem(); }));
+function refreshSystem(){ const d=derived();
+  [...$("presets").children].forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.k===S.preset)));
+  $("m1o").textContent=mfmt(S.m1); $("m2o").textContent=mfmt(S.m2);
+  const rows=[["μ / mₑ",sig(d.mu,6),1],["a_μ",fmtLen(d.a),1],["Ry_μ",fmtE(d.Ry),1],["E₁",fmtE(-d.Ry)],["2→1 (λ)",sig(HC/(0.75*d.Ry),4)+" nm"],["m₂/M · m₁/M",sig(d.f1,3)+" · "+sig(d.f2,3)]];
+  $("ro").innerHTML=rows.map(([k,v,h])=>`<div class="${h?"hl":""}"><span>${k}</span><strong>${v}</strong></div>`).join("");
+  drawCM(); if(slides[cur].querySelector("#cvU")) runSolver(); }
+
+function drawCM(){
+  if(!slides[cur].querySelector("#cvRel")) return;
+  const d=derived(), ph=2*Math.PI*S.tau, zr=S.state==="sup"? Z12*Math.cos(ph):0;
+  const Er=9, R=density($("cvRel"),Er,[{color:T.accent,fn:(x,z)=>rhoRel(x,z,S.state,ph)}]);
+  const pyR=z=>R.H/2-z*R.H/(2*Er); R.ctx.fillStyle=T.ink; R.ctx.beginPath(); R.ctx.arc(R.W/2,pyR(zr),4,0,7); R.ctx.fill();
+  scaleBar(R.ctx,R.W,R.H,Er,L=>`${L} a_μ = ${fmtLen(L*d.a)}`);
+  const El=9*Math.max(d.f1,d.f2), Lb=density($("cvLab"),El,[{color:T.p2,fn:(X,Z)=>rhoRel(-X/d.f2,-Z/d.f2,S.state,ph)},{color:T.p1,fn:(X,Z)=>rhoRel(X/d.f1,Z/d.f1,S.state,ph)}]);
+  const py=z=>Lb.H/2-z*Lb.H/(2*El), c=Lb.ctx, z1=d.f1*zr, z2=-d.f2*zr;
+  c.strokeStyle=T.ink; c.lineWidth=2; c.beginPath(); c.moveTo(Lb.W/2-7,Lb.H/2); c.lineTo(Lb.W/2+7,Lb.H/2); c.moveTo(Lb.W/2,Lb.H/2-7); c.lineTo(Lb.W/2,Lb.H/2+7); c.stroke();
+  [[z1,T.p1,12],[z2,T.p2,-12]].forEach(([z,col,dx])=>{ c.fillStyle=col; c.beginPath(); c.arc(Lb.W/2+dx,py(z),4.5,0,7); c.fill(); });
+  const tiny=f=>f*2*Lb.H/(2*El)<2; c.font=`12px ${T.ui}`; c.textAlign="right";
+  if(tiny(d.f2)){ c.fillStyle=T.p2; c.fillText("partícula 2: nube < 1 px",Lb.W-8,Lb.H-30); } if(tiny(d.f1)){ c.fillStyle=T.p1; c.fillText("partícula 1: nube < 1 px",Lb.W-8,Lb.H-30); }
+  c.textAlign="left"; scaleBar(c,Lb.W,Lb.H,El,L=>`${sig(L,3)} a_μ = ${fmtLen(L*d.a)}`);
+  $("cmKv").innerHTML = S.state==="sup"
+    ? `<span>T₂₁ <b>${d.T21.toExponential(2)} s</b></span><span>amp. ⟨z₁⟩ <b>${fmtLen(d.f1*Z12*d.a)}</b></span><span>amp. ⟨z₂⟩ <b>${fmtLen(d.f2*Z12*d.a)}</b></span><span>m₁⟨z₁⟩+m₂⟨z₂⟩ = <b>${Math.abs(S.m1*z1+S.m2*z2)<1e-9?"0":(S.m1*z1+S.m2*z2).toExponential(0)}</b> <span class="ok">CM fijo</span></span>`
+    : `<span>Autoestado: la densidad no cambia; ⟨z₁⟩ = ⟨z₂⟩ = 0.</span>`;
+  // curvas
+  const Z=setup($("cvZ")), padL=48,padR=12, half=Z.H/2, on=S.state==="sup", tx=t=>padL+(Z.W-padL-padR)*t/2;
+  const P=[{y0:6,y1:half-4,A:Z12,f:(t,k)=>(k?-d.f2:d.f1)*Z12*Math.cos(2*Math.PI*t),lab:"⟨z⟩/a_μ"},{y0:half+4,y1:Z.H-18,A:PZ12,f:(t,k)=>(k?1:-1)*PZ12*Math.sin(2*Math.PI*t),lab:"⟨p_z⟩a_μ/ħ"}];
+  Z.ctx.font=`12px ${T.data}`;
+  P.forEach(p=>{ const yc=(p.y0+p.y1)/2, s=(p.y1-p.y0)/2/(p.A*1.15), ty=v=>yc-v*s; Z.ctx.strokeStyle=T.line; Z.ctx.lineWidth=1; Z.ctx.beginPath(); Z.ctx.moveTo(padL,yc); Z.ctx.lineTo(Z.W-padR,yc); Z.ctx.stroke();
+    Z.ctx.fillStyle=T.muted; Z.ctx.fillText(p.lab,4,yc+4);
+    [T.p1,T.p2].forEach((col,k)=>{ Z.ctx.strokeStyle=col; Z.ctx.lineWidth=2; Z.ctx.beginPath(); for(let i=0;i<=300;i++){ const t=2*i/300, v=on?p.f(t,k):0; i?Z.ctx.lineTo(tx(t),ty(v)):Z.ctx.moveTo(tx(t),ty(v)); } Z.ctx.stroke(); }); });
+  Z.ctx.strokeStyle=T.ink; Z.ctx.lineWidth=1.5; Z.ctx.beginPath(); Z.ctx.moveTo(tx(S.tau),2); Z.ctx.lineTo(tx(S.tau),Z.H-16); Z.ctx.stroke();
+  Z.ctx.fillStyle=T.muted; Z.ctx.textAlign="center"; [0,0.5,1,1.5,2].forEach(t=>Z.ctx.fillText(t,tx(t),Z.H-3)); Z.ctx.textAlign="left";
+  Z.ctx.fillStyle=T.p1; Z.ctx.fillRect(Z.W-220,8,12,3); Z.ctx.fillStyle=T.ink; Z.ctx.fillText("partícula 1",Z.W-204,13);
+  Z.ctx.fillStyle=T.p2; Z.ctx.fillRect(Z.W-110,8,12,3); Z.ctx.fillStyle=T.ink; Z.ctx.fillText("partícula 2",Z.W-94,13);
+}
+$("stateSeg").addEventListener("click",e=>{ const b=e.target.closest("button[data-s]"); if(!b) return; S.state=b.dataset.s;
+  [...$("stateSeg").querySelectorAll("button[data-s]")].forEach(x=>x.setAttribute("aria-pressed",String(x===b))); drawCM(); });
+function setPlay(p){ S.playing=p; $("play").textContent=p?"Pausar":"Reproducir"; }
+$("play").addEventListener("click",()=>setPlay(!S.playing));
+
+// ---------------------------------------------------------------- solver
+let SV=null, deb;
+function runSolver(){
+  const l=+$("ell").value, N=+$("nN").value, Rm=+$("rM").value; $("nNo").textContent=N; $("rMo").textContent=Rm;
+  const {h,d,r,e}=buildDiag(N,Rm,l), rows=[]; for(let k=0;k<5;k++){ const n=l+1+k; rows.push({n,lam:eigK(d,e,k),ex:-0.5/(n*n)}); }
+  if(S.sel>=rows.length) S.sel=0; SV={l,h,d,r,e,rows,Rm}; const D=derived(), eV=v=>2*v*D.Ry;
+  $("svKv").innerHTML=`<span>h = <b>${h.toFixed(4)} a_μ</b></span>`;
+  $("svBody").innerHTML=rows.map((R,i)=>`<tr data-i="${i}" tabindex="0" class="${i===S.sel?"sel":""}"><td>${R.n}${"spd"[l]}${R.lam>0?" ·caja":""}</td><td>${fmtE(eV(R.lam))}</td><td>${fmtE(eV(R.ex))}</td><td>${(Math.abs(R.lam-R.ex)/Math.abs(R.ex)).toExponential(1)}</td></tr>`).join("");
+  [...$("svBody").children].forEach(tr=>{ const f=()=>{ S.sel=+tr.dataset.i; [...$("svBody").children].forEach((t,i)=>t.classList.toggle("sel",i===S.sel)); drawU(); };
+    tr.addEventListener("click",f); tr.addEventListener("keydown",ev=>{ if(ev.key==="Enter"||ev.key===" "){ ev.preventDefault(); f(); } }); });
+  drawU();
+}
+function drawU(){
+  if(!SV) return; const {l,r,d,e,rows,Rm,h}=SV, R=rows[S.sel], n=R.n; let u=eigvec(d,e,R.lam), s=1/Math.sqrt(h), dot=0; const ue=new Float64Array(r.length);
+  for(let i=0;i<r.length;i++){ ue[i]=uExact(n,l,r[i]); u[i]*=s; dot+=u[i]*ue[i]; } if(dot<0) for(let i=0;i<u.length;i++) u[i]=-u[i];
+  const {ctx,W,H}=setup($("cvU")), xmax=Math.min(Rm,3*n*n+8), padL=44,padR=10,top=10,bot=H-26; let um=0;
+  for(let i=0;i<r.length&&r[i]<=xmax;i++) um=Math.max(um,Math.abs(ue[i]),Math.abs(u[i]));
+  const tx=x=>padL+(W-padL-padR)*x/xmax, ty=v=>(top+bot)/2-v*(bot-top)/2/(um*1.1);
+  ctx.strokeStyle=T.line; ctx.beginPath(); ctx.moveTo(padL,ty(0)); ctx.lineTo(W-padR,ty(0)); ctx.stroke();
+  const st=Math.max(1,Math.floor(r.length/900)); ctx.strokeStyle=T.accent; ctx.lineWidth=2.2; ctx.beginPath(); let f=true;
+  for(let i=0;i<r.length&&r[i]<=xmax;i+=st){ const X=tx(r[i]),Y=ty(ue[i]); f?ctx.moveTo(X,Y):ctx.lineTo(X,Y); f=false; } ctx.stroke();
+  ctx.fillStyle=T.p2; const sp=Math.max(1,Math.floor((xmax/h)/40)); for(let i=0;i<r.length&&r[i]<=xmax;i+=sp){ ctx.beginPath(); ctx.arc(tx(r[i]),ty(u[i]),3,0,7); ctx.fill(); }
+  ctx.fillStyle=T.ink; ctx.font=`13px ${T.data}`; ctx.fillText(`u(r) · ${n}${"spd"[l]}   línea: Laguerre · puntos: numérico`,padL+6,top+14);
+  ctx.fillStyle=T.muted; ctx.textAlign="center"; for(let k=0;k<4;k++){ const x=xmax*k/4; ctx.fillText(sig(x,3),tx(x),H-8); } ctx.textAlign="left"; ctx.fillText("r / a_μ",W-padR-50,H-8);
+}
+["ell","nN","rM"].forEach(id=>$(id).addEventListener("input",()=>{ clearTimeout(deb); deb=setTimeout(runSolver,110); }));
+let convShown=false;
+$("runConv").addEventListener("click",()=>{ convShown=true; convPlot($("cvConv"),true); $("convOut").innerHTML=`pendiente <b class="ok">${CONV.slope.toFixed(3)}</b>`; });
+function convPlaceholder(){ const {ctx,W,H}=setup($("cvConv")); ctx.fillStyle=T.muted; ctx.font=`14px ${T.ui}`; ctx.fillText("Pulsa «Calcular convergencia».",16,H/2); }
+
+// ---------------------------------------------------------------- animaciones de diapositivas 12 y 17
+function drawDens(tau){ const ph=2*Math.PI*tau; const D=density($("cvDens"),9,[{color:T.accent,fn:(x,z)=>rhoRel(x,z,"sup",ph)}]);
+  D.ctx.fillStyle=T.ink; D.ctx.font=`13px ${T.data}`; D.ctx.fillText(`t / T₂₁ = ${tau.toFixed(2)}`,10,20);
+  const zr=Z12*Math.cos(ph); D.ctx.beginPath(); D.ctx.arc(D.W/2,D.H/2-zr*D.H/18,4,0,7); D.ctx.fill(); }
+function drawSup(tau){ const {ctx,W,H}=setup($("cvSup")), padL=56,padR=14, mid=H*0.5, tx=t=>padL+(W-padL-padR)*t/2;
+  const top={y0:10,y1:mid-14,ymin:-3.2,ymax:3.6}, bot={y0:mid+14,y1:H-34,ymin:0,ymax:1.6};
+  const ty=(P,v)=>P.y0+(P.y1-P.y0)*(P.ymax-v)/(P.ymax-P.ymin);
+  ctx.font=`12px ${T.data}`;
+  [top,bot].forEach(P=>{ ctx.strokeStyle=T.line; ctx.lineWidth=1; ctx.strokeRect(padL,P.y0,W-padL-padR,P.y1-P.y0); });
+  const z=t=>Z12*Math.cos(2*Math.PI*t), p=t=>-PZ12*Math.sin(2*Math.PI*t), dz=t=>Math.sqrt((9.5-z(t)**2)*(29/120-p(t)**2)), rs=t=>Math.sqrt((z(t)*p(t))**2+0.25);
+  const line=(P,fn,col,dash)=>{ ctx.strokeStyle=col; ctx.lineWidth=2; ctx.setLineDash(dash||[]); ctx.beginPath(); for(let i=0;i<=300;i++){ const t=2*i/300; i?ctx.lineTo(tx(t),ty(P,fn(t))):ctx.moveTo(tx(t),ty(P,fn(t))); } ctx.stroke(); ctx.setLineDash([]); };
+  line(top,z,T.accent); line(top,t=>10*p(t),T.p2,[6,4]); line(bot,dz,T.accent); line(bot,rs,T.good,[6,4]); line(bot,()=>0.5,T.muted,[2,4]);
+  ctx.fillStyle=T.muted; ctx.textAlign="right"; [-2,0,2].forEach(v=>ctx.fillText(v,padL-6,ty(top,v)+4)); [0,0.5,1,1.5].forEach(v=>ctx.fillText(v,padL-6,ty(bot,v)+4));
+  ctx.textAlign="center"; [0,0.5,1,1.5,2].forEach(t=>ctx.fillText(t,tx(t),H-16)); ctx.fillText("t / T₂₁",tx(1),H-2); ctx.textAlign="left";
+  ctx.fillStyle=T.accent; ctx.fillText("⟨z⟩",padL+8,top.y0+16); ctx.fillStyle=T.p2; ctx.fillText("10⟨p_z⟩",padL+44,top.y0+16);
+  ctx.fillStyle=T.accent; ctx.fillText("ΔzΔp_z",padL+8,bot.y1-8); ctx.fillStyle=T.good; ctx.fillText("cota R–S",padL+76,bot.y1-8); ctx.fillStyle=T.muted; ctx.fillText("ħ/2",padL+150,bot.y1-8);
+  ctx.strokeStyle=T.ink; ctx.lineWidth=1.4; ctx.beginPath(); ctx.moveTo(tx(tau),top.y0); ctx.lineTo(tx(tau),bot.y1); ctx.stroke();
+}
+
+// ---------------------------------------------------------------- render por diapositiva
+function renderSlide(){
+  const s=slides[cur];
+  if(s.querySelector("#cvCover")) potential($("cvCover"),{compact:true});
+  if(s.querySelector("#cvPot")) potential($("cvPot"));
+  if(s.querySelector("#cvWf")) wavefunctions($("cvWf"));
+  if(s.querySelector("#cvConvS")){ convPlot($("cvConvS"),false); }
+  if(s.querySelector("#cvDens")) drawDens(ANIM.t);
+  if(s.querySelector("#cvSup")) drawSup(ANIM.t);
+  if(s.querySelector("#cvRel")) refreshSystem();
+  if(s.querySelector("#cvU")){ runSolver(); convShown? convPlot($("cvConv"),true): convPlaceholder(); }
+}
+const reduce=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+if(reduce) setPlay(false);
+const ANIM={t:0,last:performance.now()};
+function loop(now){ const dt=(now-ANIM.last)/1000; ANIM.last=now; const s=slides[cur];
+  if(!reduce&&(s.querySelector("#cvDens")||s.querySelector("#cvSup"))){ ANIM.t=(ANIM.t+0.25*dt)%2; s.querySelector("#cvDens")? drawDens(ANIM.t): drawSup(ANIM.t); }
+  if(s.querySelector("#cvRel")&&S.playing){ S.tau=(S.tau+0.25*dt)%2; drawCM(); }
+  requestAnimationFrame(loop); }
+
+// ---------------------------------------------------------------- navegación
+function show(i,push=true){
+  cur=Math.max(0,Math.min(slides.length-1,i)); slides.forEach((s,k)=>s.classList.toggle("on",k===cur));
+  $("count").textContent=`${cur+1} / ${slides.length}`; $("ttl").textContent=slides[cur].dataset.title||"";
+  $("prog").style.width=((cur+1)/slides.length*100)+"%";
+  const n=slides[cur].querySelector("aside.n"); $("notesT").textContent=`Diapositiva ${cur+1} · ${slides[cur].dataset.title}${n&&n.dataset.t?" · "+n.dataset.t:""}`; $("notesB").innerHTML=n?n.innerHTML:"";
+  if(push){ try{ history.replaceState(null,"","#s"+(cur+1)); }catch(e){} }
+  requestAnimationFrame(renderSlide);
+}
+$("prev").addEventListener("click",()=>show(cur-1)); $("next").addEventListener("click",()=>show(cur+1));
+function toggleNotes(){ const h=!$("notes").hidden; $("notes").hidden=h; $("btnNotes").setAttribute("aria-pressed",String(!h)); }
+$("btnNotes").addEventListener("click",toggleNotes);
+function toggleFs(){ try{ if(document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen().catch(()=>{}); }catch(e){} }
+$("btnFs").addEventListener("click",toggleFs);
+document.addEventListener("keydown",e=>{
+  const tag=(e.target.tagName||"").toLowerCase(); if(tag==="input"||tag==="select"||tag==="textarea") return;
+  if(["ArrowRight","PageDown"].includes(e.key)||(e.key===" "&&tag!=="button"&&tag!=="tr")){ e.preventDefault(); show(cur+1); }
+  else if(["ArrowLeft","PageUp"].includes(e.key)){ e.preventDefault(); show(cur-1); }
+  else if(e.key==="Home") show(0); else if(e.key==="End") show(slides.length-1);
+  else if(e.key==="n"||e.key==="N") toggleNotes(); else if(e.key==="f"||e.key==="F") toggleFs();
+});
+function fromHash(){ const m=/^#s(\d+)$/.exec(location.hash); return m? +m[1]-1: 0; }
+window.addEventListener("hashchange",()=>show(fromHash(),false));
+let rz; window.addEventListener("resize",()=>{ fit(); clearTimeout(rz); rz=setTimeout(renderSlide,100); });
+function retheme(){ readTheme(); renderSlide(); }
+window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change",retheme);
+new MutationObserver(retheme).observe(document.documentElement,{attributes:true,attributeFilter:["data-theme"]});
+if(document.fonts&&document.fonts.ready) document.fonts.ready.then(retheme);
+
+readTheme(); syncSliders(); fit(); show(fromHash(),false); requestAnimationFrame(loop);
+})();
+</script>
